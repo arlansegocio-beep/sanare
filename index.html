@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanare Dashboard Ultra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#090F19',
+                        glass: 'rgba(15, 23, 42, 0.45)',
+                        'glass-border': 'rgba(255, 255, 255, 0.07)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #090F19;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 40%);
+        }
+        .lumina-panel {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-500/30 selection:text-blue-200">
+
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-obsidian animate-fade-in">
+        <div class="lumina-panel rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl shadow-blue-500/5">
+            <div class="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl border border-blue-500/30 flex items-center justify-center shadow-lg shadow-blue-500/10">
+                <i data-lucide="shield-check" class="w-8 h-8 text-blue-400"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-bold tracking-tight text-white">Sanare Command Hub</h2>
+                <p class="text-sm text-slate-400">Private Academic Terminal. Access restricted strictly to authorized medical class credentials.</p>
+            </div>
+            
+            <button id="btn-login" class="w-full py-3.5 px-4 bg-white text-slate-950 font-semibold rounded-xl hover:bg-slate-200 transition-all active:scale-[0.98] flex items-center justify-center space-x-3 shadow-lg shadow-white/5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" color="#4285f4"/>
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" color="#34a853"/>
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22l.81-.63z" color="#fbbc05"/>
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1C7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" color="#ea4335"/>
+                </svg>
+                <span>Authorize with Gmail</span>
+            </button>
+            <div id="login-error-msg" class="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 py-2 px-3 rounded-xl hidden"></div>
+        </div>
+    </div>
+
+    <div id="dashboard-layout" class="hidden">
+        <header class="w-full border-b border-white/5 bg-slate-950/20 backdrop-blur-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30">
+                        <i data-lucide="activity" class="w-5 h-5 text-blue-400 animate-pulse"></i>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                        SANARE <span class="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 ml-2 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Ultra</span>
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="connection-badge" class="flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span>Matrix Secured</span>
+                    </div>
+                    <button id="btn-logout" class="p-2 text-slate-400 hover:text-rose-400 bg-white/5 hover:bg-rose-500/10 border border-white/5 rounded-xl transition-all" title="Sign Out">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+            <section id="announcement-section" class="hidden">
+                <div class="lumina-panel rounded-2xl p-5 border-l-4 border-l-blue-500 shadow-xl relative overflow-hidden">
+                    <div class="flex items-start space-x-4">
+                        <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400 mt-0.5">
+                            <i data-lucide="megaphone" class="w-5 h-5"></i>
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <h3 id="announcement-title" class="font-semibold text-lg text-white">Class Notice</h3>
+                                <span id="announcement-priority" class="text-[10px] font-bold uppercase tracking-wider bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded border border-rose-500/30 hidden">Urgent</span>
+                            </div>
+                            <p id="announcement-content" class="text-sm text-slate-300 leading-relaxed">Loading administrative notices...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-6">
+                    <section class="lumina-panel rounded-2xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <div class="flex items-center space-x-2.5">
+                                <i data-lucide="calendar-days" class="w-5 h-5 text-purple-400"></i>
+                                <h2 class="font-semibold text-lg text-white tracking-tight">Weekly Timetable Matrix</h2>
+                            </div>
+                            <span class="text-xs text-slate-400" id="current-date-display">--</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3" id="timetable-grid"></div>
+                    </section>
+
+                    <section class="lumina-panel rounded-2xl p-6 shadow-xl space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+                            <div class="flex items-center space-x-2.5">
+                                <i data-lucide="folder-git" class="w-5 h-5 text-emerald-400"></i>
+                                <h2 class="font-semibold text-lg text-white tracking-tight">Three-Tier Resource Vault</h2>
+                            </div>
+                            <div class="flex bg-slate-950/60 p-1 rounded-xl border border-white/5 text-xs">
+                                <button onclick="filterVault('Book')" id="tab-Book" class="px-4 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-white">Books</button>
+                                <button onclick="filterVault('Note')" id="tab-Note" class="px-4 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-white">Notes</button>
+                                <button onclick="filterVault('Sud an')" id="tab-Sudan" class="px-4 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-white">Sud an</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="vault-grid"></div>
+                    </section>
+                </div>
+
+                <div class="space-y-6">
+                    <section class="lumina-panel rounded-2xl p-4 shadow-xl space-y-3">
+                        <div class="flex items-center space-x-2.5 px-2 border-b border-white/5 pb-2">
+                            <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
+                            <h2 class="font-semibold text-sm text-white uppercase tracking-wider">Rotations Calendar</h2>
+                        </div>
+                        <div class="w-full h-64 rounded-xl overflow-hidden border border-white/5 relative bg-slate-950/40">
+                            <iframe src="https://calendar.google.com/calendar/embed?src=en.philippines%23holiday%40group.v.calendar.google.com&ctz=Asia%2FManila" 
+                                    style="border: 0" class="w-full h-full opacity-70 invert contrast-125" frameborder="0" scrolling="no"></iframe>
+                        </div>
+                    </section>
+
+                    <section class="lumina-panel rounded-2xl p-5 shadow-xl space-y-4">
+                        <div class="flex items-center space-x-2.5 border-b border-white/5 pb-3">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
+                            <h2 class="font-semibold text-lg text-white tracking-tight">Interactive Board Prep</h2>
+                        </div>
+                        <div class="space-y-3" id="quiz-list"></div>
+                    </section>
+
+                    <section class="lumina-panel rounded-2xl p-5 shadow-xl space-y-4">
+                        <div class="flex items-center space-x-2.5 border-b border-white/5 pb-3">
+                            <i data-lucide="wallet" class="w-5 h-5 text-rose-400"></i>
+                            <h2 class="font-semibold text-lg text-white tracking-tight">Treasury Balance Sheet</h2>
+                        </div>
+                        <div class="bg-slate-950/50 rounded-xl p-4 border border-white/5 text-center relative overflow-hidden">
+                            <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Net Class Funds</p>
+                            <h3 class="text-3xl font-bold tracking-tight text-white mt-1" id="financial-net-balance">₱0.00</h3>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">Recent Appropriations</p>
+                            <div class="space-y-1.5 max-h-40 overflow-y-auto pr-1" id="financial-ledger-rows"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Paste your exact connection keys here
+        const SUPABASE_URL = "https://cvzwkifoexnjbtuvwxjr.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable__VapXVAabPKcv6lXJ8Agag_1nxbP4ay";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let vaultDataCache = [];
+
+        // Auth Lifecycle State Manager
+        window.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            
+            // Listen for changes in authentication state
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    showDashboard();
+                } else {
+                    showLoginScreen();
+                }
+            });
+        });
+
+        function showLoginScreen() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('dashboard-layout').classList.add('hidden');
+        }
+
+        async function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-layout').classList.remove('hidden');
+            
+            try {
+                // Fire off data loads now that we are authenticated
+                await Promise.all([
+                    loadAnnouncements(),
+                    loadWeeklySchedule(),
+                    loadDocumentVault(),
+                    loadQuizzes(),
+                    loadFinancialLedger()
+                ]);
+            } catch (err) {
+                console.error("Data loading failed:", err);
+                // If they are authenticated but not on the whitelist, Supabase RLS throws an error
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('dashboard-layout').classList.add('hidden');
+                const errMsg = document.getElementById('login-error-msg');
+                errMsg.innerText = "Access Denied: Your email is not whitelisted in the Sanare ledger.";
+                errMsg.classList.remove('hidden');
+                await supabase.auth.signOut();
+            }
+        }
+
+        // Trigger Google OAuth Login
+        document.getElementById('btn-login').addEventListener('click', async () => {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + window.location.pathname
+                }
+            });
+            if (error) {
+                const errMsg = document.getElementById('login-error-msg');
+                errMsg.innerText = error.message;
+                errMsg.classList.remove('hidden');
+            }
+        });
+
+        // Trigger Sign Out
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+        });
+
+        // 1. Data Injector: Announcement Board
+        async function loadAnnouncements() {
+            const { data, error } = await supabase
+                .from('announcements')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            if (error) throw error;
+            if (data && data.length > 0) {
+                const notice = data[0];
+                document.getElementById('announcement-title').innerText = notice.title;
+                document.getElementById('announcement-content').innerText = notice.content;
+                if (notice.is_high_priority) document.getElementById('announcement-priority').classList.remove('hidden');
+                document.getElementById('announcement-section').classList.remove('hidden');
+            }
+        }
+
+        // 2. Data Injector: Weekly Timetable Matrix
+        async function loadWeeklySchedule() {
+            const { data, error } = await supabase
+                .from('weekly_schedule')
+                .select('*')
+                .order('day_of_week', { ascending: true });
+
+            if (error) throw error;
+
+            const daysNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const jsDay = new Date().getDay();
+            const currentDatabaseDay = jsDay === 0 ? 7 : jsDay;
+
+            document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            let gridHTML = "";
+
+            for (let i = 1; i <= 7; i++) {
+                const isToday = i === currentDatabaseDay;
+                const dayClasses = isToday ? "bg-blue-500/10 border-blue-500/40 ring-1 ring-blue-500/30" : "bg-slate-950/40 border-white/5";
+                const textAccent = isToday ? "text-blue-400 font-bold" : "text-slate-400 font-medium";
+                const scheduleItems = data.filter(item => item.day_of_week === i);
+                let classesHTML = "";
+
+                if (scheduleItems.length === 0) {
+                    classesHTML = `<p class="text-[11px] text-slate-500 italic pt-1">No classes</p>`;
+                } else {
+                    scheduleItems.forEach(item => {
+                        classesHTML += `
+                            <div class="border-t border-white/5 mt-1.5 pt-1.5 space-y-0.5">
+                                <p class="text-[11px] font-semibold text-slate-200 line-clamp-1">${item.subject_title}</p>
+                                <p class="text-[10px] text-slate-400">${item.time_slot}</p>
+                                ${item.location_or_link ? `<p class="text-[9px] text-purple-400 truncate"><i data-lucide="map-pin" class="w-2.5 h-2.5 inline mr-0.5"></i>${item.location_or_link}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                }
+
+                gridHTML += `
+                    <div class="lumina-panel rounded-xl p-3 border ${dayClasses} flex flex-col justify-between transition-all">
+                        <div>
+                            <h4 class="text-xs uppercase tracking-wider ${textAccent}">${daysNames[i-1]}</h4>
+                            ${classesHTML}
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('timetable-grid').innerHTML = gridHTML;
+            lucide.createIcons();
+        }
+
+        // 3. Data Injector: Resource Vault 
+        async function loadDocumentVault() {
+            const { data, error } = await supabase.from('document_vault').select('*').order('title', { ascending: true });
+            if (error) throw error;
+            vaultDataCache = data;
+            filterVault('Book');
+        }
+
+        function filterVault(category) {
+            const tabs = ['Book', 'Note', 'Sud an'];
+            tabs.forEach(tab => {
+                const elementId = tab === 'Sud an' ? 'tab-Sudan' : `tab-${tab}`;
+                document.getElementById(elementId).className = tab === category 
+                    ? "px-4 py-2 rounded-lg font-medium transition-all bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                    : "px-4 py-2 rounded-lg font-medium transition-all text-slate-400 hover:text-white";
+            });
+
+            const filtered = vaultDataCache.filter(item => item.category === category);
+            let vaultHTML = "";
+
+            if (filtered.length === 0) {
+                vaultHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-500 italic">Vault tier empty.</div>`;
+            } else {
+                filtered.forEach(doc => {
+                    let optimizedPreviewUrl = doc.gdrive_url;
+                    if (optimizedPreviewUrl.includes("drive.google.com") && optimizedPreviewUrl.includes("/view")) {
+                        optimizedPreviewUrl = optimizedPreviewUrl.replace("/view", "/preview");
+                    }
+                    vaultHTML += `
+                        <div class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all group">
+                            <div class="space-y-1 max-w-[80%]">
+                                <h4 class="text-sm font-semibold text-slate-200 truncate group-hover:text-blue-400 transition-colors">${doc.title}</h4>
+                                <p class="text-xs text-slate-400 line-clamp-1">${doc.description || 'No description.'}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <a href="${optimizedPreviewUrl}" target="_blank" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
+                                <a href="${doc.gdrive_url}" target="_blank" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('vault-grid').innerHTML = vaultHTML;
+            lucide.createIcons();
+        }
+
+        // 4. Data Injector: Quiz Directories
+        async function loadQuizzes() {
+            const { data, error } = await supabase.from('quiz_directory').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            let quizHTML = "";
+
+            if (data.length === 0) {
+                quizHTML = `<p class="text-xs text-slate-500 italic text-center py-4">No evaluations available.</p>`;
+            } else {
+                data.forEach(quiz => {
+                    quizHTML += `
+                        <a href="${quiz.quiz_url}" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-940/40 border border-white/5 hover:border-amber-500/30 rounded-xl transition-all group">
+                            <div class="space-y-1">
+                                <p class="text-sm font-semibold text-slate-200 group-hover:text-amber-400 transition-colors">${quiz.title}</p>
+                                <span class="inline-block text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">${quiz.question_count || '?'} Qs</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+                        </a>
+                    `;
+                });
+            }
+            document.getElementById('quiz-list').innerHTML = quizHTML;
+            lucide.createIcons();
+        }
+
+        // 5. Data Injector: Financial Ledger
+        async function loadFinancialLedger() {
+            const { data, error } = await supabase.from('financial_ledger').select('*').order('transaction_date', { ascending: false });
+            if (error) throw error;
+            let netTotal = 0.00;
+            let ledgerHTML = "";
+
+            if (data.length === 0) {
+                ledgerHTML = `<p class="text-xs text-slate-500 italic text-center py-2">No transactions.</p>`;
+            } else {
+                data.forEach(txn => {
+                    const amountValue = parseFloat(txn.amount);
+                    netTotal += amountValue;
+                    const badgeColor = amountValue >= 0 ? "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" : "text-rose-400 bg-rose-500/5 border-rose-500/10";
+                    ledgerHTML += `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/20 border border-white/5 text-xs">
+                            <div class="space-y-0.5 max-w-[70%] truncate">
+                                <p class="text-slate-200 font-medium truncate">${txn.description}</p>
+                                <p class="text-[10px] text-slate-400">${new Date(txn.transaction_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                            </div>
+                            <span class="px-2 py-1 rounded-md font-mono font-bold border text-[11px] ${badgeColor}">
+                                ${amountValue >= 0 ? '+' : ''}₱${amountValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            </span>
+                        </div>
+                    `;
+                });
+            }
+
+            const balanceEl = document.getElementById('financial-net-balance');
+            balanceEl.innerText = `${netTotal >= 0 ? '' : '-'}₱${Math.abs(netTotal).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            balanceEl.className = netTotal < 0 ? "text-3xl font-bold tracking-tight text-rose-400 mt-1" : "text-3xl font-bold tracking-tight text-emerald-400 mt-1";
+            document.getElementById('financial-ledger-rows').innerHTML = ledgerHTML;
+        }
+    </script>
+</body>
+</html>
