@@ -183,9 +183,26 @@
         }
 
         async function showMainDashboard() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('dashboard-layout').classList.remove('hidden');
             try {
+                // 1. Identify who just logged in from their Google metadata
+                const { data: { user } } = await coreClient.auth.getUser();
+                const loggedInEmail = user?.email;
+
+                // 2. Query the whitelist table to see if this specific email is registered
+                const { data: whitelistCheck, error: whitelistError } = await coreClient
+                    .from('allowed_emails')
+                    .select('email')
+                    .eq('email', loggedInEmail);
+
+                // 3. HARD SECURITY GATE: If the email doesn't exist in our table, throw them out immediately
+                if (whitelistError || !whitelistCheck || whitelistCheck.length === 0) {
+                    throw new Error("Access Blocked: Email not whitelisted.");
+                }
+
+                // 4. Verification passed! Safely open the dashboard layout and stream data
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-layout').classList.remove('hidden');
+
                 await Promise.all([
                     fetchNotices(),
                     fetchTimetable(),
@@ -193,13 +210,19 @@
                     fetchQuizzes(),
                     fetchLedger()
                 ]);
+
             } catch (err) {
-                console.error(err);
+                console.error("Security authorization failed:", err);
+                
+                // Keep the dashboard hidden, clear any session states, and display an explicit error banner
                 document.getElementById('login-screen').classList.remove('hidden');
                 document.getElementById('dashboard-layout').classList.add('hidden');
+                
                 const errBox = document.getElementById('login-error-msg');
-                errBox.innerText = "Access Denied: Email not whitelisted in the system ledger.";
+                errBox.innerText = "Access Denied: Your Gmail account is not whitelisted on the Sanare ledger.";
                 errBox.classList.remove('hidden');
+                
+                // Force a sign out on Supabase's end so they can't sneak past cached sessions
                 await coreClient.auth.signOut();
             }
         }
