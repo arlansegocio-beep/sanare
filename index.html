@@ -170,11 +170,12 @@
     </div>
 
     <script>
-        // Paste your exact connection keys here
+        // Connection Keys
         const SUPABASE_URL = "https://cvzwkifoexnjbtuvwxjr.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable__VapXVAabPKcv6lXJ8Agag_1nxbP4ay";
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Renamed to avoid clashing with the global library object
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let vaultDataCache = [];
 
         // Auth Lifecycle State Manager
@@ -182,7 +183,7 @@
             lucide.createIcons();
             
             // Listen for changes in authentication state
-            supabase.auth.onAuthStateChange((event, session) => {
+            supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     showDashboard();
                 } else {
@@ -211,19 +212,18 @@
                 ]);
             } catch (err) {
                 console.error("Data loading failed:", err);
-                // If they are authenticated but not on the whitelist, Supabase RLS throws an error
                 document.getElementById('login-screen').classList.remove('hidden');
                 document.getElementById('dashboard-layout').classList.add('hidden');
                 const errMsg = document.getElementById('login-error-msg');
                 errMsg.innerText = "Access Denied: Your email is not whitelisted in the Sanare ledger.";
                 errMsg.classList.remove('hidden');
-                await supabase.auth.signOut();
+                await supabaseClient.auth.signOut();
             }
         }
 
         // Trigger Google OAuth Login
         document.getElementById('btn-login').addEventListener('click', async () => {
-            const { error } = await supabase.auth.signInWithOAuth({
+            const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin + window.location.pathname
@@ -238,13 +238,13 @@
 
         // Trigger Sign Out
         document.getElementById('btn-logout').addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.reload();
         });
 
         // 1. Data Injector: Announcement Board
         async function loadAnnouncements() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('announcements')
                 .select('*')
                 .order('created_at', { ascending: false })
@@ -262,7 +262,7 @@
 
         // 2. Data Injector: Weekly Timetable Matrix
         async function loadWeeklySchedule() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('weekly_schedule')
                 .select('*')
                 .order('day_of_week', { ascending: true });
@@ -312,7 +312,7 @@
 
         // 3. Data Injector: Resource Vault 
         async function loadDocumentVault() {
-            const { data, error } = await supabase.from('document_vault').select('*').order('title', { ascending: true });
+            const { data, error } = await supabaseClient.from('document_vault').select('*').order('title', { ascending: true });
             if (error) throw error;
             vaultDataCache = data;
             filterVault('Book');
@@ -358,7 +358,7 @@
 
         // 4. Data Injector: Quiz Directories
         async function loadQuizzes() {
-            const { data, error } = await supabase.from('quiz_directory').select('*').order('created_at', { ascending: false });
+            const { data, error } = await supabaseClient.from('quiz_directory').select('*').order('created_at', { ascending: false });
             if (error) throw error;
             let quizHTML = "";
 
@@ -383,7 +383,7 @@
 
         // 5. Data Injector: Financial Ledger
         async function loadFinancialLedger() {
-            const { data, error } = await supabase.from('financial_ledger').select('*').order('transaction_date', { ascending: false });
+            const { data, error } = await supabaseClient.from('financial_ledger').select('*').order('transaction_date', { ascending: false });
             if (error) throw error;
             let netTotal = 0.00;
             let ledgerHTML = "";
