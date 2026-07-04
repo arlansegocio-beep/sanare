@@ -35,6 +35,8 @@
             border-radius: 1.25rem;
         }
         .active-tab { background: #FFFFFF; color: #09090B; }
+        .premium-card { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s; }
+        .premium-card:hover { transform: translateY(-3px); }
     </style>
 </head>
 <body class="dark bg-slate-950 text-slate-50 font-sans min-h-screen relative overflow-x-hidden">
@@ -71,15 +73,15 @@
             // Global Master Filters
             const [selectedBatch, setSelectedBatch] = useState("Sanare");
             const [selectedSemester, setSelectedSemester] = useState("1st Semester");
-            const [selectedSubject, setSelectedSubject] = useState("All");
-            const [selectedBlock, setSelectedBlock] = useState("All");
-            const [selectedBookSubject, setSelectedBookSubject] = useState("All");
 
-            // Reset secondary filters when tabs switch to prevent stale states
+            // Drill-Down UI States
+            const [activeSubject, setActiveSubject] = useState(null);
+            const [expandedBlocks, setExpandedBlocks] = useState({});
+
+            // Reset navigation deep-states when main tabs or global filters change
             useEffect(() => {
-                setSelectedSubject("All");
-                setSelectedBlock("All");
-                setSelectedBookSubject("All");
+                setActiveSubject(null);
+                setExpandedBlocks({});
             }, [currentTab, selectedBatch, selectedSemester]);
 
             useEffect(() => {
@@ -168,50 +170,54 @@
                 return { preview: str, download: str };
             };
 
-            // --- DYNAMIC FILTER PARSING MECHANICS ---
-            // 1. Filter books down by selected subject dropdown
-            const uniqueBookSubjects = useMemo(() => {
-                const distinct = new Set(books.map(b => b.subject).filter(Boolean));
-                return Array.from(distinct).sort();
+            const toggleBlock = (blockName) => {
+                setExpandedBlocks(prev => ({ ...prev, [blockName]: !prev[blockName] }));
+            };
+
+            // --- DATA STRUCTURING LOGIC ---
+
+            // 1. Books Organization (Subject Boards -> Books)
+            const groupedBooks = useMemo(() => {
+                const map = {};
+                books.forEach(b => {
+                    if(!map[b.subject]) map[b.subject] = [];
+                    map[b.subject].push(b);
+                });
+                return map;
             }, [books]);
 
-            const filteredBooks = useMemo(() => {
-                if (selectedBookSubject === "All") return books;
-                return books.filter(b => b.subject === selectedBookSubject);
-            }, [books, selectedBookSubject]);
-
-            // 2. Filter resources down by Batch + Sem, then calculate available choices dynamically
-            const baseFilteredResources = useMemo(() => {
+            // 2. Resources Organization (Subject Boards -> Master Blocks -> Exact Sub-Blocks)
+            const filteredResources = useMemo(() => {
                 return academicResources.filter(r => r.resource_type === currentTab && r.batch === selectedBatch && r.semester === selectedSemester);
             }, [academicResources, currentTab, selectedBatch, selectedSemester]);
 
-            const dynamicSubjectsList = useMemo(() => {
-                const distinct = new Set(baseFilteredResources.map(r => r.subject).filter(Boolean));
-                return Array.from(distinct).sort();
-            }, [baseFilteredResources]);
-
-            const dynamicBlocksList = useMemo(() => {
-                const scope = selectedSubject === "All" ? baseFilteredResources : baseFilteredResources.filter(r => r.subject === selectedSubject);
-                const distinct = new Set(scope.map(r => r.block).filter(Boolean));
-                return Array.from(distinct).sort();
-            }, [baseFilteredResources, selectedSubject]);
-
-            // 3. Complete structural file grid matching dropdown states
-            const finalGroupedBlockData = useMemo(() => {
-                let currentScope = baseFilteredResources;
-                if (selectedSubject !== "All") currentScope = currentScope.filter(r => r.subject === selectedSubject);
-                if (selectedBlock !== "All") currentScope = currentScope.filter(r => r.block === selectedBlock);
-
-                const grouped = {};
-                currentScope.forEach(item => {
-                    let parentGroup = item.block;
-                    const numMatch = String(item.block).match(/Block\s+(\d+)/i);
-                    if (numMatch) { parentGroup = `Block ${numMatch[1]}`; }
-                    if (!grouped[parentGroup]) grouped[parentGroup] = [];
-                    grouped[parentGroup].push(item);
+            const groupedResourcesBySubject = useMemo(() => {
+                const map = {};
+                filteredResources.forEach(r => {
+                    if(!map[r.subject]) map[r.subject] = [];
+                    map[r.subject].push(r);
                 });
-                return grouped;
-            }, [baseFilteredResources, selectedSubject, selectedBlock]);
+                return map;
+            }, [filteredResources]);
+
+            // Master Block Extractor for the active Subject
+            const activeSubjectMasterBlocks = useMemo(() => {
+                if (!activeSubject) return {};
+                const items = groupedResourcesBySubject[activeSubject] || [];
+                const map = {};
+                
+                items.forEach(item => {
+                    let master = item.block;
+                    const match = String(item.block).match(/Block\s+(\d+)/i);
+                    if (match) master = `Block ${match[1]}`;
+                    
+                    if (!map[master]) map[master] = {};
+                    let sub = item.block;
+                    if (!map[master][sub]) map[master][sub] = [];
+                    map[master][sub].push(item);
+                });
+                return map;
+            }, [activeSubject, groupedResourcesBySubject]);
 
             const daysNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             const currentDayInt = new Date().getDay() === 0 ? 7 : new Date().getDay();
@@ -262,62 +268,24 @@
                             </aside>
 
                             <main class="flex-1 flex flex-col h-full bg-slate-950 overflow-y-auto no-scrollbar pb-16 md:pb-0">
-                                <header class="border-b border-white/5 px-6 py-3 flex flex-wrap items-center justify-between gap-4 shrink-0 backdrop-blur-md sticky top-0 z-50 bg-slate-950/80">
+                                <header class="border-b border-white/5 px-6 py-4 flex flex-wrap items-center justify-between gap-4 shrink-0 backdrop-blur-md sticky top-0 z-50 bg-slate-950/80">
                                     <div class="flex items-center gap-2">
                                         <span class="text-xs font-extrabold text-white uppercase tracking-wider">{currentTab} Node</span>
                                     </div>
 
-                                    {/* DYNAMIC SMART DROPDOWN HUB FOR RESOURCES */}
-                                    {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
+                                    {/* GLOBAL BATCH & SEMESTER FILTERS */}
+                                    {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire", "folders"].includes(currentTab) && (
                                         <div class="flex flex-wrap items-center gap-3 bg-slate-900/60 p-2 border border-white/5 rounded-2xl text-[11px] font-bold">
-                                            {/* Batch selection cluster */}
                                             <div class="flex bg-slate-950 p-1 border border-white/5 rounded-xl">
                                                 {["Sanare", "Manus", "Vesties"].map(b => (
                                                     <button key={b} onClick={() => setSelectedBatch(b)} class={`px-2.5 py-1 rounded-md transition ${selectedBatch === b ? "bg-white text-black" : "text-slate-400 hover:text-white"}`}>{b}</button>
                                                 ))}
                                             </div>
-                                            
-                                            {/* Semester selector cluster */}
                                             <div class="flex bg-slate-950 p-1 border border-white/5 rounded-xl">
                                                 {["1st Semester", "2nd Semester"].map(s => (
                                                     <button key={s} onClick={() => setSelectedSemester(s)} class={`px-2.5 py-1 rounded-md transition ${selectedSemester === s ? "bg-white text-black" : "text-slate-400 hover:text-white"}`}>{s === "1st Semester" ? "Sem 1" : "Sem 2"}</button>
                                                 ))}
                                             </div>
-
-                                            {/* Subject Dropdown Filter */}
-                                            <div class="flex items-center gap-1.5 bg-slate-950 px-2 py-1 border border-white/5 rounded-xl">
-                                                <span class="text-slate-500 text-[10px]">Subject:</span>
-                                                <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} class="bg-transparent outline-none text-white cursor-pointer max-w-[120px]">
-                                                    <option value="All" class="bg-slate-900 text-white">All Subjects</option>
-                                                    {dynamicSubjectsList.map(subj => (
-                                                        <option key={subj} value={subj} class="bg-slate-900 text-white">{subj}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-
-                                            {/* Block Dropdown Filter */}
-                                            <div class="flex items-center gap-1.5 bg-slate-950 px-2 py-1 border border-white/5 rounded-xl">
-                                                <span class="text-slate-500 text-[10px]">Block:</span>
-                                                <select value={selectedBlock} onChange={(e) => setSelectedBlock(e.target.value)} class="bg-transparent outline-none text-white cursor-pointer max-w-[120px]">
-                                                    <option value="All" class="bg-slate-900 text-white">All Blocks</option>
-                                                    {dynamicBlocksList.map(blk => (
-                                                        <option key={blk} value={blk} class="bg-slate-900 text-white">{blk}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* DYNAMIC SUBJECT SELECTOR FOR BOOKS */}
-                                    {currentTab === "books" && (
-                                        <div class="flex items-center gap-1.5 bg-slate-900/60 p-2 border border-white/5 rounded-xl text-[11px] font-bold">
-                                            <span class="text-slate-400 text-[10px]">Library Subject:</span>
-                                            <select value={selectedBookSubject} onChange={(e) => setSelectedBookSubject(e.target.value)} class="bg-slate-950 border border-white/5 rounded-lg px-2.5 py-1 text-white cursor-pointer outline-none">
-                                                <option value="All">All Reference Books</option>
-                                                {uniqueBookSubjects.map(sub => (
-                                                    <option key={sub} value={sub}>{sub}</option>
-                                                ))}
-                                            </select>
                                         </div>
                                     )}
                                 </header>
@@ -329,7 +297,7 @@
                                         <div class="space-y-6 text-left">
                                             {announcement && (
                                                 <div class="glass-panel p-5 border-l-4 border-l-blue-500 shadow-xl">
-                                                    <div class="flex items-start x-4">
+                                                    <div class="flex items-start space-x-4">
                                                         <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400 mt-0.5"><i data-lucide="megaphone" class="w-5 h-5"></i></div>
                                                         <div class="flex-1 space-y-1">
                                                             <div class="flex justify-between items-center">
@@ -370,7 +338,7 @@
                                         </div>
                                     )}
 
-                                    {/* MODULE: FILTERED MEDICAL BOOKS MATRIX */}
+                                    {/* MODULE: MEDICAL BOOKS MATRX (DRILL-DOWN) */}
                                     {currentTab === "books" && (
                                         <div class="space-y-6 text-left">
                                             {configMap.books_master_drive && (
@@ -379,75 +347,148 @@
                                                     <i data-lucide="arrow-right" class="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform"></i>
                                                 </a>
                                             )}
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {filteredBooks.length === 0 ? <div class="col-span-full text-center text-xs text-slate-500 italic py-8">No matching reference textbooks found.</div> : filteredBooks.map((b, idx) => {
-                                                    const routes = resolveDriveLinks(b.drive_link);
-                                                    return (
-                                                        <div key={idx} class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all">
-                                                            <div class="space-y-1 max-w-[70%]">
-                                                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{b.subject}</span>
-                                                                <h4 class="text-sm font-semibold text-slate-200 truncate">{b.book_name}</h4>
-                                                            </div>
-                                                            <div class="flex items-center space-x-2 shrink-0">
-                                                                <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
-                                                                <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
+
+                                            {!activeSubject ? (
+                                                Object.keys(groupedBooks).length === 0 ? (
+                                                    <div class="text-center text-xs text-slate-500 italic py-12 border border-dashed border-white/5 rounded-2xl">No books loaded in the library yet.</div>
+                                                ) : (
+                                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                                        {Object.keys(groupedBooks).sort().map(subj => (
+                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel p-6 text-left premium-card hover:border-blue-500/40 transition-all group flex flex-col justify-between h-32">
+                                                                <div class="flex justify-between items-start">
+                                                                    <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-2">{subj}</h3>
+                                                                    <div class="p-2 bg-white/5 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                                                                        <i data-lucide="book-open" class="w-5 h-5 text-slate-400 group-hover:text-blue-400"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <p class="text-xs font-semibold text-slate-500 mt-2">{groupedBooks[subj].length} Texts Available</p>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div class="space-y-4 animate-fade-in">
+                                                    <button onClick={() => setActiveSubject(null)} class="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-2">
+                                                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to Subject Boards
+                                                    </button>
+                                                    <h2 class="text-2xl font-extrabold text-white tracking-tight">{activeSubject} References</h2>
+                                                    
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                                        {groupedBooks[activeSubject].map((b, idx) => {
+                                                            const routes = resolveDriveLinks(b.drive_link);
+                                                            return (
+                                                                <div key={idx} class="bg-slate-950/50 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/20 transition-all">
+                                                                    <div class="space-y-1 max-w-[70%]">
+                                                                        <h4 class="text-sm font-semibold text-slate-200 line-clamp-2">{b.book_name}</h4>
+                                                                    </div>
+                                                                    <div class="flex items-center space-x-2 shrink-0">
+                                                                        <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
+                                                                        <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
-                                    {/* DYNAMIC ADVANCED MULTI-TIER FILTER CONTENT LIST */}
+                                    {/* MODULE: ACADEMIC RESOURCES (DRILL-DOWN FOLDERS -> ACCORDIONS -> FILES) */}
                                     {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
                                         <div class="space-y-6 text-left">
-                                            {Object.keys(finalGroupedBlockData).length === 0 ? (
-                                                <div class="text-center text-xs text-slate-500 italic py-12 border border-dashed border-white/5 rounded-2xl">No assets match your active filter dropdown matrix parameters.</div>
-                                            ) : Object.entries(finalGroupedBlockData).map(([blockName, items]) => {
-                                                const isSingleRedirectTab = ["Fresh_Sud_An", "Questionnaire"].includes(currentTab);
-                                                return (
-                                                    <div key={blockName} class="space-y-3">
-                                                        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest pl-1">{blockName}</h3>
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            {items.map((item, idx) => {
-                                                                const routes = resolveDriveLinks(item.file_link);
-                                                                return (
-                                                                    <div key={idx} class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all">
-                                                                        <div class="space-y-1 max-w-[65%]">
-                                                                            <div class="flex items-center gap-2">
-                                                                                <span class="text-[9px] font-bold text-blue-400 uppercase tracking-widest">{item.subject}</span>
-                                                                                <span class="text-[9px] px-1.5 py-0.2 bg-white/5 text-slate-400 border border-white/5 rounded">{item.block}</span>
-                                                                            </div>
-                                                                            <h4 class="text-sm font-semibold text-slate-200 truncate">{item.topic}</h4>
-                                                                        </div>
-                                                                        <div class="flex items-center space-x-2 shrink-0">
-                                                                            {isSingleRedirectTab ? (
-                                                                                <a href={item.file_link} target="_blank" class="px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold">
-                                                                                    <span>Open Link</span>
-                                                                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                                                                                </a>
-                                                                            ) : (
-                                                                                <>
-                                                                                    <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
-                                                                                    <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
-                                                                                </>
-                                                                            )}
-                                                                        </div>
+                                            
+                                            {/* TIER 1: SUBJECT BOARDS */}
+                                            {!activeSubject ? (
+                                                Object.keys(groupedResourcesBySubject).length === 0 ? (
+                                                    <div class="text-center text-xs text-slate-500 italic py-12 border border-dashed border-white/5 rounded-2xl">No assets loaded for {selectedBatch} • {selectedSemester}.</div>
+                                                ) : (
+                                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                                        {Object.keys(groupedResourcesBySubject).sort().map(subj => (
+                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel p-6 text-left premium-card hover:border-blue-500/40 transition-all group flex flex-col justify-between h-32">
+                                                                <div class="flex justify-between items-start">
+                                                                    <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-2">{subj}</h3>
+                                                                    <div class="p-2 bg-white/5 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                                                                        <i data-lucide="folder" class="w-5 h-5 text-slate-400 group-hover:text-blue-400"></i>
                                                                     </div>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                                </div>
+                                                                <p class="text-xs font-semibold text-slate-500 mt-2">{groupedResourcesBySubject[subj].length} files indexed</p>
+                                                            </button>
+                                                        ))}
                                                     </div>
-                                                );
-                                            })}
+                                                )
+                                            ) : (
+                                                /* TIER 2: MASTER BLOCK ACCORDIONS */
+                                                <div class="space-y-4 animate-fade-in">
+                                                    <button onClick={() => setActiveSubject(null)} class="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-2">
+                                                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to Subject Boards
+                                                    </button>
+                                                    <h2 class="text-2xl font-extrabold text-white tracking-tight">{activeSubject}</h2>
+                                                    
+                                                    <div class="space-y-3 mt-4">
+                                                        {Object.keys(activeSubjectMasterBlocks).sort().map(masterBlock => {
+                                                            const isExpanded = expandedBlocks[masterBlock];
+                                                            const isSingleRedirectTab = ["Fresh_Sud_An", "Questionnaire"].includes(currentTab);
+                                                            
+                                                            return (
+                                                                <div key={masterBlock} class="bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden">
+                                                                    {/* Accordion Header */}
+                                                                    <button onClick={() => toggleBlock(masterBlock)} class="w-full px-5 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                                                                        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-widest">{masterBlock}</h3>
+                                                                        <i data-lucide={isExpanded ? "chevron-up" : "chevron-down"} class="w-5 h-5 text-slate-500"></i>
+                                                                    </button>
+                                                                    
+                                                                    {/* TIER 3: SUB-BLOCKS & FILES */}
+                                                                    {isExpanded && (
+                                                                        <div class="p-5 border-t border-white/5 space-y-6 bg-slate-950/50">
+                                                                            {Object.keys(activeSubjectMasterBlocks[masterBlock]).sort().map(subBlock => (
+                                                                                <div key={subBlock} class="space-y-3">
+                                                                                    {/* Only show Sub-block header if it's different from the master block name */}
+                                                                                    {subBlock !== masterBlock && (
+                                                                                        <h4 class="text-[10px] font-extrabold text-blue-400 uppercase tracking-widest pl-1 border-l-2 border-blue-500">{subBlock}</h4>
+                                                                                    )}
+                                                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                                                        {activeSubjectMasterBlocks[masterBlock][subBlock].map((item, idx) => {
+                                                                                            const routes = resolveDriveLinks(item.file_link);
+                                                                                            return (
+                                                                                                <div key={idx} class="bg-slate-900/80 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/20 transition-all">
+                                                                                                    <div class="space-y-1 max-w-[65%]">
+                                                                                                        <h4 class="text-sm font-semibold text-slate-200 line-clamp-2">{item.topic}</h4>
+                                                                                                    </div>
+                                                                                                    <div class="flex items-center space-x-2 shrink-0">
+                                                                                                        {isSingleRedirectTab ? (
+                                                                                                            <a href={item.file_link} target="_blank" class="px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold">
+                                                                                                                <span>Open Link</span>
+                                                                                                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                                                                                            </a>
+                                                                                                        ) : (
+                                                                                                            <>
+                                                                                                                <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
+                                                                                                                <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
+                                                                                                            </>
+                                                                                                        )}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            );
+                                                                                        })}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
                                     {/* MODULE: BATCH DIRECTORY ROOT FOLDERS */}
                                     {currentTab === "folders" && (
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                                            {batchFolders.length === 0 ? <div class="col-span-full text-center text-xs text-slate-500 italic py-8">No folder connections loaded.</div> : batchFolders.map((f, idx) => (
+                                            {batchFolders.length === 0 ? <div class="col-span-full text-center text-xs text-slate-500 italic py-8">No folder connections loaded.</div> : batchFolders.filter(f => f.batch === selectedBatch && f.semester === selectedSemester).map((f, idx) => (
                                                 <a key={idx} href={f.folder_link} target="_blank" class="p-4 bg-slate-900/40 border border-white/5 hover:border-white/10 rounded-xl flex items-center justify-between group transition">
                                                     <div class="space-y-1 max-w-[85%]">
                                                         <div class="flex items-center gap-2 text-[9px] font-bold tracking-wider uppercase text-slate-500">
