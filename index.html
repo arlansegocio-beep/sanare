@@ -209,8 +209,8 @@
                                     <button onClick={() => setCurrentTab("books")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "books" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="book-open" class="w-4 h-4"></i> Medical Books Matrix</button>
                                     <button onClick={() => setCurrentTab("Note")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Note" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="file-text" class="w-4 h-4"></i> Lecture Notes Archive</button>
                                     <button onClick={() => setCurrentTab("Sud_An")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Sud_An" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="folder-open" class="w-4 h-4"></i> Sud An Recalls</button>
-                                    <button onClick={() => setCurrentTab("Fresh_Sud_An")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Fresh_Sud_An" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="sparkles" class="w-4 h-4"></i> Fresh Sud An</button>
-                                    <button onClick={() => setCurrentTab("Questionnaire")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Questionnaire" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="help-circle" class="w-4 h-4"></i> Questionnaires</button>
+                                    <button onClick={() => setCurrentTab("Fresh_Sud_An")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Fresh_Sud_An" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="sparkles" class="w-4 h-4"></i> Fresh Sud An (GDocs)</button>
+                                    <button onClick={() => setCurrentTab("Questionnaire")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "Questionnaire" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="help-circle" class="w-4 h-4"></i> Interactive Quizzes</button>
                                     <button onClick={() => setCurrentTab("folders")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "folders" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="folder-git" class="w-4 h-4"></i> Batch Root Folders</button>
                                     <button onClick={() => setCurrentTab("calendar")} class={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition ${currentTab === "calendar" ? "active-tab shadow-md text-black" : "text-slate-400 hover:bg-slate-900"}`}><i data-lucide="calendar" class="w-4 h-4"></i> Rotations Calendar</button>
                                 </nav>
@@ -244,7 +244,7 @@
                                         <div class="space-y-6 text-left">
                                             {announcement && (
                                                 <div class="glass-panel p-5 border-l-4 border-l-blue-500 shadow-xl">
-                                                    <div class="flex items-start space-x-4">
+                                                    <div class="flex items-start x-4">
                                                         <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400 mt-0.5"><i data-lucide="megaphone" class="w-5 h-5"></i></div>
                                                         <div class="flex-1 space-y-1">
                                                             <div class="flex justify-between items-center">
@@ -285,7 +285,7 @@
                                         </div>
                                     )}
 
-                                    {/* MODULE: MEDICAL BOOKS VIEW */}
+                                    {/* MODULE: MEDICAL BOOKS VIEW (2 BUTTON LAYOUT) */}
                                     {currentTab === "books" && (
                                         <div class="space-y-6 text-left">
                                             {configMap.books_master_drive && (
@@ -299,13 +299,13 @@
                                                     const routes = resolveDriveLinks(b.drive_link);
                                                     return (
                                                         <div key={idx} class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all">
-                                                            <div class="space-y-1 max-w-[75%]">
+                                                            <div class="space-y-1 max-w-[70%]">
                                                                 <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{b.subject}</span>
                                                                 <h4 class="text-sm font-semibold text-slate-200 truncate">{b.book_name}</h4>
                                                             </div>
                                                             <div class="flex items-center space-x-2 shrink-0">
-                                                                <a href={routes.preview} target="_blank" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
-                                                                <a href={routes.download} target="_blank" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
+                                                                <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
+                                                                <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
                                                             </div>
                                                         </div>
                                                     );
@@ -314,36 +314,48 @@
                                         </div>
                                     )}
 
-                                    {/* MODULES: NOTES, SUD_AN, FRESH, QUESTIONNAIRES */}
+                                    {/* DYNAMIC COMBINED CONTENT STREAM (EITHER 1 OR 2 BUTTONS BASED ON CATEGORY RULES) */}
                                     {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
                                         <div class="space-y-6 text-left">
                                             {Object.keys(getGroupedBlockData(academicResources, currentTab)).length === 0 ? (
                                                 <div class="text-center text-xs text-slate-500 italic py-12 border border-dashed border-white/5 rounded-2xl">No asset structures registered under current {selectedBatch} / {selectedSemester} filter paths.</div>
-                                            ) : Object.entries(getGroupedBlockData(academicResources, currentTab)).map(([blockName, items]) => (
-                                                <div key={blockName} class="space-y-3">
-                                                    <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest pl-1">{blockName}</h3>
-                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        {items.map((item, idx) => {
-                                                            const routes = resolveDriveLinks(item.file_link);
-                                                            return (
-                                                                <div key={idx} class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all">
-                                                                    <div class="space-y-1 max-w-[75%]">
-                                                                        <div class="flex items-center gap-2">
-                                                                            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{item.subject}</span>
-                                                                            <span class="text-[9px] px-1.5 py-0.2 bg-white/5 text-slate-400 border border-white/5 rounded">{item.block}</span>
+                                            ) : Object.entries(getGroupedBlockData(academicResources, currentTab)).map(([blockName, items]) => {
+                                                const isSingleRedirectTab = ["Fresh_Sud_An", "Questionnaire"].includes(currentTab);
+                                                return (
+                                                    <div key={blockName} class="space-y-3">
+                                                        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest pl-1">{blockName}</h3>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            {items.map((item, idx) => {
+                                                                const routes = resolveDriveLinks(item.file_link);
+                                                                return (
+                                                                    <div key={idx} class="bg-slate-950/30 border border-white/5 rounded-xl p-4 flex items-center justify-between hover:border-white/10 transition-all">
+                                                                        <div class="space-y-1 max-w-[65%]">
+                                                                            <div class="flex items-center gap-2">
+                                                                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{item.subject}</span>
+                                                                                <span class="text-[9px] px-1.5 py-0.2 bg-white/5 text-slate-400 border border-white/5 rounded">{item.block}</span>
+                                                                            </div>
+                                                                            <h4 class="text-sm font-semibold text-slate-200 truncate">{item.topic}</h4>
                                                                         </div>
-                                                                        <h4 class="text-sm font-semibold text-slate-200 truncate">{item.topic}</h4>
+                                                                        <div class="flex items-center space-x-2 shrink-0">
+                                                                            {isSingleRedirectTab ? (
+                                                                                <a href={item.file_link} target="_blank" class="px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold">
+                                                                                    <span>Open Terminal</span>
+                                                                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                                                                </a>
+                                                                            ) : (
+                                                                                <>
+                                                                                    <a href={routes.preview} target="_blank" title="View Document" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
+                                                                                    <a href={routes.download} target="_blank" title="Direct Download" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
+                                                                                </>
+                                                                            )}
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="flex items-center space-x-2 shrink-0">
-                                                                        <a href={routes.preview} target="_blank" class="p-2 bg-white/5 hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 rounded-lg border border-white/5 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></a>
-                                                                        <a href={routes.download} target="_blank" class="p-2 bg-white/5 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-lg border border-white/5 transition-all"><i data-lucide="download" class="w-4 h-4"></i></a>
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     )}
 
