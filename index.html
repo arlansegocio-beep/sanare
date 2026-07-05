@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SANARE ULTRA | Premium Medical Hub</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Premium Fontshare Typography System (Strategy A) -->
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=geist@400,500,600,700&display=swap" rel="stylesheet">
-    <!-- Google Material Symbols Outlined -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <!-- Supabase Core System JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -46,12 +42,10 @@
 
     <div id="root" class="w-full flex min-h-screen"></div>
 
-    <!-- React and Babel Engines -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- React Execution Script Engine -->
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
@@ -65,11 +59,11 @@
             const [authError, setAuthError] = useState("");
             const [isVerifying, setIsVerifying] = useState(false);
             
-            // UX State Layers
+            // Layout UX State Controls
             const [isDark, setIsDark] = useState(true);
             const [toasts, setToasts] = useState([]);
 
-            // Database Live State Arrays
+            // Cloud Database States
             const [announcement, setAnnouncement] = useState(null);
             const [weeklySchedule, setWeeklySchedule] = useState([]);
             const [books, setBooks] = useState([]);
@@ -77,15 +71,15 @@
             const [batchFolders, setBatchFolders] = useState([]);
             const [configMap, setConfigMap] = useState({});
 
-            // Global Filter Selections
+            // Layout Filter Pointers
             const [selectedBatch, setSelectedBatch] = useState("Sanare");
             const [selectedSemester, setSelectedSemester] = useState("1st Semester");
 
-            // Drill-Down UI Navigation Pointer States
+            // Drill Down Interactive Nodes
             const [activeSubject, setActiveSubject] = useState(null);
             const [expandedBlocks, setExpandedBlocks] = useState({});
 
-            // Dynamic Gradient Theme Controller
+            // Ambient Theme Sync Monitor Listener
             useEffect(() => {
                 const body = document.body;
                 if (isDark) {
@@ -99,7 +93,6 @@
                 }
             }, [isDark]);
 
-            // Reset drill-downs instantly on tab switches
             useEffect(() => {
                 setActiveSubject(null);
                 setExpandedBlocks({});
@@ -141,7 +134,7 @@
                 return () => subscription.unsubscribe();
             }, []);
 
-            // --- DATABASE SYNC FETCH LAYERS ---
+            // --- CLOUD SOURCE SYNCHRONIZATION ---
             async function fetchConfig() {
                 const { data } = await coreClient.from('system_config').select('*');
                 if (data) {
@@ -172,12 +165,12 @@
                 if (data) setBatchFolders(data);
             }
 
-            // Toast Trigger Notification Mechanism
-            const spawnToastNotification = (topicTitle) => {
-                const uniqueId = Date.now();
-                setToasts(prev => [...prev, { id: uniqueId, title: topicTitle }]);
+            // Real-Time System Notification Framework
+            const triggerSystemToastAlert = (topicTitle) => {
+                const hashId = Date.now();
+                setToasts(prev => [...prev, { id: hashId, title: topicTitle }]);
                 setTimeout(() => {
-                    setToasts(prev => prev.filter(toast => toast.id !== uniqueId));
+                    setToasts(prev => prev.filter(toast => toast.id !== hashId));
                 }, 4000);
             };
 
@@ -213,7 +206,7 @@
                 return 'folder_open';
             };
 
-            // --- ADVANCED DATA GROUPING LOGIC ---
+            // --- DATA ARRAY MANIFEST MAPPING POINTERS ---
             const groupedBooks = useMemo(() => {
                 const map = {};
                 books.forEach(b => {
@@ -261,7 +254,6 @@
                 dashboard: "Overview",
                 books: "Medical Books",
                 Note: "Lecture Notes",
-                Node_Recalls: "Recalls",
                 Sud_An: "Recalls",
                 Fresh_Sud_An: "New Recalls",
                 Questionnaire: "Interactive Quizzes",
@@ -272,7 +264,7 @@
             return (
                 <div class="w-full flex min-h-screen overflow-x-hidden relative font-sans">
                     
-                    {/* SYSTEM TOAST OVERLAY PANEL NOTIFICATION MATRIX */}
+                    {/* APP HUD ALERT MESSAGING OVERLAY LAYER */}
                     <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
                         {toasts.map(toast => (
                             <div key={toast.id} class="pointer-events-auto bg-white/90 dark:bg-slate-900/90 glass-panel border border-emerald-500/30 dark:border-emerald-500/20 shadow-xl p-4 rounded-xl flex items-start gap-3 animate-slide-up text-left shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
@@ -287,7 +279,7 @@
                         ))}
                     </div>
 
-                    {/* AUTH GATE PANEL VIEW */}
+                    {/* GATE LOGIN CORE PANEL */}
                     {currentPage === "auth" && (
                         <div class="flex-1 flex items-center justify-center px-4 relative z-10">
                             <div class="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 shadow-2xl rounded-3xl p-8 text-center space-y-6">
@@ -306,11 +298,10 @@
                         </div>
                     )}
 
-                    {/* MAIN APPLICATION NODE DESKTOPS */}
+                    {/* MAIN APPLICATION CONSOLE INTERFACE CANVAS */}
                     {currentPage === "dashboard" && (
                         <div class="w-full flex min-h-screen">
                             
-                            {/* FULLY COLLAPSIBLE HOVER-ACTIVATED SIDEBAR NAVIGATION */}
                             <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/60 dark:bg-[#09090B]/65 glass-panel border-r border-slate-200 dark:border-white/10 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm">
                                 <div class="px-5 mb-8 flex items-center gap-3.5 shrink-0 overflow-hidden relative w-full">
                                     <div class="w-10 h-10 shrink-0 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg">
@@ -350,25 +341,23 @@
                                 </div>
                             </aside>
 
-                            {/* CONTAINER CONTENT CANVAS CORE PANEL */}
+                            {/* CORE CONTROL WORKSPACE LAYOUT PANELS */}
                             <main class="flex-1 flex flex-col relative min-h-screen transition-all duration-300 ease-in-out md:ml-20">
                                 
-                                {/* HEADER FILTERS STICKY ZONE */}
+                                {/* HEADER FILTERS BLOCK */}
                                 <header class="sticky top-0 z-40 flex flex-col w-full bg-slate-50/70 dark:bg-[#050508]/70 glass-panel border-b border-slate-200 dark:border-white/10 shadow-sm">
                                     <div class="flex justify-between items-center px-6 py-4">
                                         <span class="font-bold text-slate-900 dark:text-white md:hidden font-display tracking-tight">SANARE ULTRA</span>
                                         <h2 class="hidden md:block font-bold text-lg font-display tracking-tight text-slate-800 dark:text-slate-200">{TabNames[currentTab]}</h2>
                                         
-                                        {/* PROMINENT HEADER FILTER CLUSTERS */}
+                                        {/* FILTER BATCH MODULES */}
                                         {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire", "folders"].includes(currentTab) && (
                                             <div class="flex items-center gap-6">
-                                                {/* Batch Segmented Controller */}
                                                 <div class="hidden sm:flex bg-slate-200/50 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-300/50 dark:border-white/5 shadow-inner">
                                                     {["Sanare", "Manus", "Vesties"].map(b => (
                                                         <button key={b} onClick={() => setSelectedBatch(b)} class={`px-4 py-1.5 rounded-lg text-sm font-bold global-transition ${selectedBatch === b ? "bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-white/10" : "text-slate-500 hover:text-slate-700 dark:hover:text-white"}`}>{b}</button>
                                                     ))}
                                                 </div>
-                                                {/* Semester Segmented Controller */}
                                                 <div class="flex bg-slate-200/50 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-300/50 dark:border-white/5 shadow-inner">
                                                     {["1st Semester", "2nd Semester"].map(s => (
                                                         <button key={s} onClick={() => setSelectedSemester(s)} class={`px-4 py-1.5 rounded-lg text-sm font-bold global-transition ${selectedSemester === s ? "bg-primary text-white shadow-sm border border-primary/20" : "text-slate-500 hover:text-slate-700 dark:hover:text-white"}`}>{s === "1st Semester" ? "Sem 1" : "Sem 2"}</button>
@@ -381,10 +370,9 @@
 
                                 <div class="flex-1 w-full relative p-6 md:p-8 max-w-[1600px] mx-auto pb-32">
                                     
-                                    {/* DASHBOARD SYSTEM LANDING NODES */}
+                                    {/* COMPONENT MODULE: OVERVIEW DASHBOARD */}
                                     {currentTab === "dashboard" && (
                                         <div class="space-y-6 text-left max-w-4xl mx-auto global-transition">
-                                            {/* ENFORCED BULLETIN BOARD */}
                                             <div class="glass-panel p-6 border-l-4 border-l-primary shadow-sm dark:shadow-xl rounded-xl bg-white/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
                                                 <div class="flex items-start gap-4">
                                                     <div class="p-3 bg-primary/10 rounded-xl text-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined">campaign</span></div>
@@ -400,7 +388,7 @@
                                                 </div>
                                             </div>
 
-                                            {/* WEEKLY CALENDAR OVERVIEW (3-TIER CALENDAR HEATMAP) */}
+                                            {/* 3-TIER WEEKLY CALENDAR OVERVIEW HEATMAPS */}
                                             <div class="glass-panel p-6 shadow-sm dark:shadow-xl space-y-4 rounded-2xl bg-white/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
                                                 <div class="flex items-center gap-2.5 border-b border-slate-100 dark:border-white/5 pb-4">
                                                     <span class="material-symbols-outlined text-primary">calendar_clock</span>
@@ -411,19 +399,15 @@
                                                         const i = idx + 1;
                                                         const dayEvents = weeklySchedule.filter(item => item.day_of_week === i);
                                                         
-                                                        // 3-Tier Heatmapping Color Mechanics Logic
                                                         let heatmapStyle = "";
                                                         let badgeStyle = "";
                                                         if (i < currentDayInt) {
-                                                            // Tier 1: Past Days (Muted/Faded Desaturated Display)
                                                             heatmapStyle = "bg-slate-200/20 dark:bg-slate-950/15 border-slate-200/40 dark:border-white/5 opacity-40 select-none";
                                                             badgeStyle = "text-slate-400 dark:text-slate-500 font-bold";
                                                         } else if (i === currentDayInt) {
-                                                            // Tier 2: Current Day (Vibrant Glow Ring Overlay)
                                                             heatmapStyle = "bg-primary/10 dark:bg-primary/10 border-primary/40 ring-1 ring-primary/20 shadow-[0_0_15px_rgba(180,197,255,0.15)]";
                                                             badgeStyle = "text-primary font-black";
                                                         } else {
-                                                            // Tier 3: Future Days (Clean Standard Frame)
                                                             heatmapStyle = "bg-white/60 dark:bg-slate-900/40 border-slate-200 dark:border-white/10";
                                                             badgeStyle = "text-slate-600 dark:text-slate-400 font-bold";
                                                         }
@@ -447,7 +431,7 @@
                                         </div>
                                     )}
 
-                                    {/* MODULE: MEDICAL BOOKS */}
+                                    {/* COMPONENT MODULE: MEDICAL BOOKS MATRICES */}
                                     {currentTab === "books" && (
                                         <div class="text-left w-full h-full global-transition">
                                             {!activeSubject ? (
@@ -471,7 +455,6 @@
                                                     </div>
                                                 </div>
                                             ) : (
-                                                // DRILL DOWN LAYOUT WITH SIDEBAR INTERFACES
                                                 <div class="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
                                                     <div class="w-full md:w-64 shrink-0 flex flex-col gap-2 sticky top-28 h-fit">
                                                         <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 pl-3 mb-2">Course Modules</h3>
@@ -495,7 +478,7 @@
                                                                         </div>
                                                                         <div class="flex items-center gap-2 shrink-0">
                                                                             <a href={routes.preview} target="_blank" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary/20 hover:text-primary global-transition"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
-                                                                            <button onClick={() => { spawnToastNotification(b.book_name); window.open(routes.download, '_blank'); }} class="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-500 global-transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
+                                                                            <button onClick={() => { triggerSystemToastAlert(b.book_name); window.open(routes.download, '_blank'); }} class="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-500 global-transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
                                                                         </div>
                                                                     </div>
                                                                 );
@@ -507,11 +490,10 @@
                                         </div>
                                     )}
 
-                                    {/* ACADEMIC RESOURCE TIERS: LECTURE NOTES & RECALL ARCHIVES */}
+                                    {/* COMPONENT MODULE: LECTURE NOTES & RECALL DIRECTORIES */}
                                     {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
                                         <div class="text-left w-full h-full global-transition">
                                             
-                                            {/* TIER 1: CORE GRID MATRIX */}
                                             {!activeSubject ? (
                                                 <div class="w-full">
                                                     <div class="mb-10 text-left max-w-5xl mx-auto">
@@ -533,8 +515,6 @@
                                                     </div>
                                                 </div>
                                             ) : (
-                                                
-                                                /* TIER 2 & 3: CONTEXT INTERIOR SPLIT PANEL + CONNECTIONS TIMELINE */
                                                 <div class="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
                                                     <div class="w-full md:w-64 shrink-0 flex flex-col gap-2 sticky top-28 h-fit z-10">
                                                         <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 pl-3 mb-2">Course Modules</h3>
@@ -559,15 +539,13 @@
                                                                     return (
                                                                         <div key={masterBlock} class="relative pl-12 group/block">
                                                                             
-                                                                            {/* TIMELINE CONNECTOR: TERMINATES PRECISELY ON THE FINAL ITEM */}
+                                                                            {/* TREE CONNECTOR ELEMENT TERMINATION PIPELINE */}
                                                                             {!isLastBlockElement && (
                                                                                 <div class="absolute left-[25px] top-7 bottom-[-24px] w-0.5 bg-slate-200 dark:bg-white/15 global-transition"></div>
                                                                             )}
                                                                             
-                                                                            {/* Timeline Dot Node */}
                                                                             <div class="absolute left-[19px] top-6 w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-slate-50 dark:ring-[#050508] global-transition group-hover/block:scale-110 z-10"></div>
                                                                             
-                                                                            {/* Accordion Structural Frame */}
                                                                             <div class="bg-white/70 dark:bg-[#131315] border border-slate-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden global-transition">
                                                                                 <div onClick={() => toggleBlock(masterBlock)} class="flex justify-between items-center p-6 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.01] select-none">
                                                                                     <div class="flex items-center gap-4">
@@ -577,7 +555,7 @@
                                                                                     <span class={`material-symbols-outlined text-slate-400 global-transition ${isExpanded ? 'rotate-180' : ''}`}>expand_more</span>
                                                                                 </div>
                                                                                 
-                                                                                {/* Granular Chapter Arrays Wrapper */}
+                                                                                {/* INTERIOR EXPANDED COMPONENT CHANNELS */}
                                                                                 {isExpanded && (
                                                                                     <div class="p-6 pt-2 space-y-8 bg-slate-50/50 dark:bg-black/20 border-t border-slate-100 dark:border-white/5">
                                                                                         {Object.keys(activeSubjectMasterBlocks[masterBlock]).sort().map(subBlock => (
@@ -609,7 +587,7 @@
                                                                                                                 </div>
                                                                                                                 <div class="flex items-center gap-2 w-full md:w-auto shrink-0 justify-end">
                                                                                                                     <a href={routes.preview} target="_blank" class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-lg md:rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary/20 hover:text-primary global-transition"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
-                                                                                                                    <button onClick={() => { spawnToastNotification(item.topic); window.open(routes.download, '_blank'); }} class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-lg md:rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-500 global-transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
+                                                                                                                    <button onClick={() => { triggerSystemToastAlert(item.topic); window.open(routes.download, '_blank'); }} class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-lg md:rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-500 global-transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         );
@@ -631,7 +609,7 @@
                                         </div>
                                     )}
 
-                                    {/* MODULE: BATCH FOLDERS */}
+                                    {/* COMPONENT MODULE: BATCH FOLDERS CORES */}
                                     {currentTab === "folders" && (
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-4xl mx-auto">
                                             {batchFolders.length === 0 ? <div class="col-span-full text-center text-sm text-slate-500 italic py-8">No shared connection folders.</div> : batchFolders.filter(f => f.batch === selectedBatch && f.semester === selectedSemester).map((f, idx) => (
@@ -649,7 +627,7 @@
                                         </div>
                                     )}
 
-                                    {/* MODULE: SCHOOL CALENDAR */}
+                                    {/* COMPONENT MODULE: EMED CALENDARS */}
                                     {currentTab === "calendar" && (
                                         <div class="space-y-4 text-left h-full flex flex-col max-w-5xl mx-auto">
                                             <div class="bg-white/70 dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-2 rounded-2xl h-[65vh] min-h-[450px] flex-1 shadow-sm">
@@ -661,7 +639,7 @@
                                 </div>
                             </main>
 
-                            {/* MOBILE NAVIGATION BAR DOCK */}
+                            {/* CONTAINER NAVBAR VIEW DOCK PORTS STRIP MOBILE ONLY */}
                             <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 dark:bg-[#050508]/90 backdrop-blur-md border-t border-slate-200 dark:border-white/10 z-50 px-1 flex justify-around items-center">
                                 <button onClick={() => setCurrentTab("dashboard")} class={`flex flex-col items-center justify-center p-1 ${currentTab === "dashboard" ? "text-primary font-bold" : "text-slate-500"}`}><span class="material-symbols-outlined text-[20px] mb-0.5">terminal</span><span class="text-[9px]">Overview</span></button>
                                 <button onClick={() => setCurrentTab("books")} class={`flex flex-col items-center justify-center p-1 ${currentTab === "books" ? "text-primary font-bold" : "text-slate-500"}`}><span class="material-symbols-outlined text-[20px] mb-0.5">library_books</span><span class="text-[9px]">Books</span></button>
