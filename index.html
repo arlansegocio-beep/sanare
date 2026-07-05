@@ -111,7 +111,6 @@
                         setIsVerifying(true);
                         const loggedInEmail = session.user?.email;
 
-                        // Pulling full user node to harvest customized naming metadata
                         const { data: whitelistCheck, error: whitelistError } = await coreClient
                             .from('allowed_emails')
                             .select('*')
@@ -125,7 +124,6 @@
                             return;
                         }
 
-                        // Determine First Name: DB explicit column check -> Fallback to Google Account Token String
                         const profileRow = whitelistCheck[0];
                         const designatedName = profileRow.first_name || profileRow.name || session.user?.user_metadata?.full_name || "Scholar";
                         setUserFirstName(designatedName.split(' ')[0].trim());
@@ -314,7 +312,7 @@
                     {currentPage === "dashboard" && (
                         <div class="w-full flex min-h-screen">
                             
-                            <!-- FLUID COLLAPSIBLE HOVER SIDEBAR PANELS LAYER -->
+                            {/* FLUID COLLAPSIBLE HOVER SIDEBAR PANELS LAYER */}
                             <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/60 dark:bg-[#09090B]/65 glass-panel border-r border-slate-200 dark:border-white/10 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm">
                                 <div class="px-5 mb-8 flex items-center gap-3.5 shrink-0 overflow-hidden relative w-full">
                                     <div class="w-10 h-10 shrink-0 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg">
