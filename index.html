@@ -313,14 +313,14 @@
                         <div class="w-full flex min-h-screen">
                             
                             {/* FLUID COLLAPSIBLE HOVER SIDEBAR PANELS LAYER */}
-                            <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/60 dark:bg-[#09090B]/65 glass-panel border-r border-slate-200 dark:border-white/10 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm">
+                            <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white glass-panel border-r border-gray-100 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm">
                                 <div class="px-5 mb-8 flex items-center gap-3.5 shrink-0 overflow-hidden relative w-full">
-                                    <div class="w-10 h-10 shrink-0 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg">
-                                        <span class="material-symbols-outlined text-primary text-xl">medical_services</span>
+                                    <div class="w-10 h-10 shrink-0 rounded-[14px] bg-[#7950f2]/10 border border-[#7950f2]/20 flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[#7950f2] text-xl">medical_services</span>
                                     </div>
                                     <div class="transition-all duration-300 flex flex-col justify-center whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-40">
-                                        <h1 class="font-display font-extrabold text-[17px] bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-primary-fixed dark:to-white tracking-widest leading-none">SANARE ULTRA</h1>
-                                        <p class="text-[10px] italic text-slate-400 dark:text-slate-400 font-medium leading-none mt-1">to heal beyond</p>
+                                        <h1 class="font-display font-extrabold text-[17px] text-black tracking-widest leading-none">SANARE ULTRA</h1>
+                                        <p class="text-[10px] italic text-gray-400 font-medium leading-none mt-1">to heal beyond</p>
                                     </div>
                                 </div>
                                 <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto no-scrollbar text-left overflow-x-hidden">
@@ -334,18 +334,18 @@
                                         { id: "folders", icon: "folder_shared" },
                                         { id: "calendar", icon: "calendar_today" }
                                     ].map(tab => (
-                                        <button key={tab.id} onClick={() => setCurrentTab(tab.id)} class={`w-full flex items-center gap-3 p-3 rounded-xl global-transition whitespace-nowrap overflow-hidden ${currentTab === tab.id ? "bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/5 text-slate-900 dark:text-white font-bold" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"}`}>
+                                        <button key={tab.id} onClick={() => setCurrentTab(tab.id)} class={`w-full flex items-center gap-3 p-3 rounded-[14px] transition whitespace-nowrap overflow-hidden ${currentTab === tab.id ? "bg-[#7950f2]/10 border border-[#7950f2]/20 text-black font-bold" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"}`}>
                                             <span class="material-symbols-outlined shrink-0 text-[20px]">{tab.icon}</span> 
                                             <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto">{TabNames[tab.id]}</span>
                                         </button>
                                     ))}
                                 </nav>
-                                <div class="px-4 mt-auto pt-4 border-t border-slate-200 dark:border-white/10 space-y-2 overflow-hidden">
-                                    <button onClick={() => setIsDark(!isDark)} class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 font-bold global-transition whitespace-nowrap overflow-hidden">
+                                <div class="px-4 mt-auto pt-4 border-t border-gray-100 space-y-2 overflow-hidden">
+                                    <button onClick={() => setIsDark(!isDark)} class="w-full flex items-center gap-3 p-3 rounded-[14px] hover:bg-gray-50 text-gray-500 font-bold transition whitespace-nowrap overflow-hidden">
                                         <span class="material-symbols-outlined shrink-0">{isDark ? 'light_mode' : 'dark_mode'}</span>
                                         <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
                                     </button>
-                                    <button onClick={async () => { await coreClient.auth.signOut(); window.location.reload(); }} class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-red-500 font-bold global-transition whitespace-nowrap overflow-hidden">
+                                    <button onClick={async () => { await coreClient.auth.signOut(); window.location.reload(); }} class="w-full flex items-center gap-3 p-3 rounded-[14px] hover:bg-gray-50 text-gray-500 hover:text-gray-900 font-bold transition whitespace-nowrap overflow-hidden">
                                         <span class="material-symbols-outlined shrink-0">logout</span>
                                         <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto">Log Out</span>
                                     </button>
@@ -356,35 +356,35 @@
                             <main class="flex-1 flex flex-col relative min-h-screen transition-all duration-300 ease-in-out md:ml-20">
                                 
                                 {/* RECONFIGURED TOP NAVIGATION BAR WITH USER WELCOME EMBED */}
-                                <header class="sticky top-0 z-40 flex flex-col w-full bg-slate-50/70 dark:bg-[#050508]/70 glass-panel border-b border-slate-200 dark:border-white/10 shadow-sm">
-                                    <div class="flex justify-between items-center px-6 py-4 gap-4">
-                                        <h2 class="font-bold text-base md:text-lg font-display tracking-tight text-slate-800 dark:text-slate-200">{TabNames[currentTab]}</h2>
+                                <header class="sticky top-0 z-40 flex flex-col w-full bg-white glass-panel border-b border-gray-100 shadow-sm">
+                                    <div class="flex justify-between items-center px-4 py-4 md:px-6 md:py-6 gap-3 md:gap-6">
+                                        <h2 class="text-base md:text-xl font-semibold tracking-tight text-black font-display">{TabNames[currentTab]}</h2>
                                         
-                                        <div class="flex items-center gap-4 ml-auto shrink-0">
+                                        <div class="flex items-center gap-3 md:gap-6 ml-auto shrink-0">
                                             {/* FILTER MODULES */}
                                             {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire", "folders"].includes(currentTab) && (
                                                 <div class="flex items-center gap-2 md:gap-4">
-                                                    <div class="hidden sm:flex bg-slate-200/50 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-300/50 dark:border-white/5 shadow-inner">
+                                                    <div class="hidden sm:flex bg-gray-50 p-1 rounded-full border border-gray-100">
                                                         {["Sanare", "Manus", "Vesties"].map(b => (
-                                                            <button key={b} onClick={() => setSelectedBatch(b)} class={`px-2.5 py-1 rounded-lg text-[11px] font-bold global-transition ${selectedBatch === b ? "bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-white/10" : "text-slate-500 hover:text-slate-700 dark:hover:text-white"}`}>{b}</button>
+                                                            <button key={b} onClick={() => setSelectedBatch(b)} class={`px-2.5 py-1 md:px-4 md:py-2 rounded-[14px] text-[11px] md:text-xs font-semibold transition ${selectedBatch === b ? "bg-white text-black shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"}`}>{b}</button>
                                                         ))}
                                                     </div>
-                                                    <div class="flex bg-slate-200/50 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-300/50 dark:border-white/5 shadow-inner">
+                                                    <div class="flex bg-gray-50 p-1 rounded-full border border-gray-100">
                                                         {["1st Semester", "2nd Semester"].map(s => (
-                                                            <button key={s} onClick={() => setSelectedSemester(s)} class={`px-2.5 py-1 rounded-lg text-[11px] font-bold global-transition ${selectedSemester === s ? "bg-primary text-white shadow-sm border border-primary/20" : "text-slate-500 hover:text-slate-700 dark:hover:text-white"}`}>{s === "1st Semester" ? "Sem 1" : "Sem 2"}</button>
+                                                            <button key={s} onClick={() => setSelectedSemester(s)} class={`px-2.5 py-1 md:px-4 md:py-2 rounded-[14px] text-[11px] md:text-xs font-semibold transition ${selectedSemester === s ? "bg-[#7950f2] text-white shadow-sm border border-[#7950f2]/20" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"}`}>{s === "1st Semester" ? "Sem 1" : "Sem 2"}</button>
                                                         ))}
                                                     </div>
                                                 </div>
                                             )}
 
                                             {/* HIGH-FIDELITY USER WELCOME COMPONENT */}
-                                            <div class="flex items-center gap-2 bg-white/80 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 px-3 py-1.5 rounded-xl shadow-sm">
+                                            <div class="flex items-center gap-2 md:gap-3 bg-white border border-gray-100 px-3 py-1.5 md:px-4 md:py-2 rounded-[20px] shadow-sm">
                                                 <span class="relative flex h-2 w-2">
-                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ccff00] opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ccff00]"></span>
                                                 </span>
-                                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
-                                                    Welcome, <span class="font-display font-bold text-slate-800 dark:text-slate-100">{userFirstName}</span>
+                                                <span class="text-xs font-normal text-gray-500">
+                                                    Welcome, <span class="font-display font-bold text-gray-900">{userFirstName}</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -395,16 +395,16 @@
                                     
                                     {/* COMPONENT MODULE: OVERVIEW DASHBOARD */}
                                     {currentTab === "dashboard" && (
-                                        <div class="space-y-6 text-left max-w-4xl mx-auto global-transition">
-                                            <div class="glass-panel p-6 border-l-4 border-l-primary shadow-sm dark:shadow-xl rounded-xl bg-white/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                                        <div class="space-y-6 text-left max-w-4xl mx-auto">
+                                            <div class="bg-white rounded-tl-[48px] rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px] p-6 md:p-8 shadow-none border border-gray-100 glass-panel">
                                                 <div class="flex items-start gap-4">
-                                                    <div class="p-3 bg-primary/10 rounded-xl text-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined">campaign</span></div>
+                                                    <div class="p-3 bg-[#7950f2]/10 rounded-[14px] text-[#7950f2] flex items-center justify-center shrink-0"><span class="material-symbols-outlined">campaign</span></div>
                                                     <div class="flex-1 space-y-1">
                                                         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-1">
-                                                            <h3 class="font-bold text-lg text-slate-900 dark:text-white font-display">Latest Bulletin Notice</h3>
-                                                            {announcement && <span class="text-xs font-mono text-slate-400">{announcement.date_posted}</span>}
+                                                            <h3 class="text-lg font-bold tracking-tight text-black font-display">Latest Bulletin Notice</h3>
+                                                            {announcement && <span class="text-xs font-normal text-gray-400">{announcement.date_posted}</span>}
                                                         </div>
-                                                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2 font-medium">
+                                                        <p class="text-sm font-medium text-gray-900 leading-relaxed mt-2">
                                                             {announcement ? announcement.announcement_text : "No active bulletin notices at this time. Check back later for updates."}
                                                         </p>
                                                     </div>
@@ -412,12 +412,12 @@
                                             </div>
 
                                             {/* 3-TIER WEEKLY CALENDAR OVERVIEW HEATMAPS */}
-                                            <div class="glass-panel p-6 shadow-sm dark:shadow-xl space-y-4 rounded-2xl bg-white/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
-                                                <div class="flex items-center gap-2.5 border-b border-slate-100 dark:border-white/5 pb-4">
-                                                    <span class="material-symbols-outlined text-primary">calendar_clock</span>
-                                                    <h2 class="font-bold text-xl text-slate-900 dark:text-white tracking-tight font-display">Weekly Timetable Schedule</h2>
+                                            <div class="bg-white rounded-[32px] p-6 shadow-none border border-gray-100 glass-panel space-y-4">
+                                                <div class="flex items-center gap-3 border-b border-gray-100 pb-4">
+                                                    <span class="material-symbols-outlined text-[#7950f2]">calendar_clock</span>
+                                                    <h2 class="text-xl font-semibold tracking-tight text-black font-display">Weekly Timetable Schedule</h2>
                                                 </div>
-                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
                                                     {daysNames.map((day, idx) => {
                                                         const i = idx + 1;
                                                         const dayEvents = weeklySchedule.filter(item => item.day_of_week === i);
@@ -425,25 +425,25 @@
                                                         let heatmapStyle = "";
                                                         let badgeStyle = "";
                                                         if (i < currentDayInt) {
-                                                            heatmapStyle = "bg-slate-200/20 dark:bg-slate-950/15 border-slate-200/40 dark:border-white/5 opacity-40 select-none";
-                                                            badgeStyle = "text-slate-400 dark:text-slate-500 font-bold";
+                                                            heatmapStyle = "bg-gray-50 border-gray-100 opacity-40 select-none";
+                                                            badgeStyle = "text-gray-400 font-bold";
                                                         } else if (i === currentDayInt) {
-                                                            heatmapStyle = "bg-primary/10 dark:bg-primary/10 border-primary/40 ring-1 ring-primary/20 shadow-[0_0_15px_rgba(180,197,255,0.15)]";
-                                                            badgeStyle = "text-primary font-black";
+                                                            heatmapStyle = "bg-[#7950f2]/10 border-[#7950f2]/40 ring-1 ring-[#7950f2]/20 shadow-[0_0_15px_rgba(121,80,242,0.15)]";
+                                                            badgeStyle = "text-[#7950f2] font-black";
                                                         } else {
-                                                            heatmapStyle = "bg-white/60 dark:bg-slate-900/40 border-slate-200 dark:border-white/10";
-                                                            badgeStyle = "text-slate-600 dark:text-slate-400 font-bold";
+                                                            heatmapStyle = "bg-white border border-gray-100";
+                                                            badgeStyle = "text-gray-500 font-bold";
                                                         }
 
                                                         return (
-                                                            <div key={day} class={`rounded-xl p-4 border flex flex-col min-h-[140px] global-transition ${heatmapStyle}`}>
+                                                            <div key={day} class={`rounded-[20px] p-4 border flex flex-col min-h-[140px] transition ${heatmapStyle}`}>
                                                                 <h4 class={`text-xs uppercase tracking-wider ${badgeStyle}`}>{day}</h4>
                                                                 {dayEvents.length === 0 ? (
-                                                                    <p class="text-[11px] text-slate-400 italic pt-3">Clear Schedule</p>
+                                                                    <p class="text-xs font-normal text-gray-400 italic pt-3">Clear Schedule</p>
                                                                 ) : dayEvents.map((ev, eIdx) => (
-                                                                    <div key={eIdx} class="border-t border-slate-200 dark:border-white/5 mt-2 pt-2 space-y-1">
-                                                                        <p class="text-[11px] font-bold text-slate-700 dark:text-slate-200 whitespace-normal break-words leading-tight">{ev.event_title}</p>
-                                                                        <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono">{ev.event_date}</p>
+                                                                    <div key={eIdx} class="border-t border-gray-100 mt-2 pt-2 space-y-1">
+                                                                        <p class="text-xs font-medium text-gray-900 whitespace-normal break-words leading-tight">{ev.event_title}</p>
+                                                                        <p class="text-xs font-normal text-gray-400 font-mono">{ev.event_date}</p>
                                                                     </div>
                                                                 ))}
                                                             </div>
@@ -515,23 +515,23 @@
 
                                     {/* COMPONENT MODULE: LECTURE NOTES & RECALL DIRECTORIES */}
                                     {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
-                                        <div class="text-left w-full h-full global-transition">
+                                        <div class="text-left w-full h-full">
                                             
                                             {!activeSubject ? (
                                                 <div class="w-full">
                                                     <div class="mb-10 text-left max-w-5xl mx-auto">
-                                                        <h2 class="font-display text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Subject Directories</h2>
-                                                        <p class="text-slate-500 text-sm font-medium">Select a subject to view files.</p>
+                                                        <h2 class="font-display text-2xl font-bold tracking-tight text-black mb-2">Subject Directories</h2>
+                                                        <p class="text-sm font-medium text-gray-500">Select a subject to view files.</p>
                                                     </div>
                                                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                                                        {Object.keys(groupedResourcesBySubject).length === 0 ? <div class="col-span-full text-center text-sm text-slate-500 italic py-12 border border-dashed border-slate-300 dark:border-white/10 rounded-2xl">No asset nodes loaded for {selectedBatch} • {selectedSemester}.</div> : Object.keys(groupedResourcesBySubject).sort().map(subj => (
-                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 shadow-sm rounded-2xl p-8 flex flex-col justify-between h-48 group relative overflow-hidden text-left w-full hover:border-primary/40 dark:hover:border-primary/40 global-transition hover:shadow-md hover:-translate-y-1">
+                                                        {Object.keys(groupedResourcesBySubject).length === 0 ? <div class="col-span-full text-center text-sm text-gray-500 italic py-12 border border-dashed border-gray-200 rounded-[20px]">No asset nodes loaded for {selectedBatch} • {selectedSemester}.</div> : Object.keys(groupedResourcesBySubject).sort().map(subj => (
+                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class="bg-white border border-gray-100 rounded-[20px] p-8 flex flex-col justify-between h-48 group relative overflow-hidden text-left w-full shadow-none hover:border-[#7950f2]/40 transition hover:-translate-y-1">
                                                                 <div class="relative z-10 flex justify-between items-start">
-                                                                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-3xl">{getSubjectIcon(subj)}</span></div>
+                                                                    <div class="w-12 h-12 rounded-[14px] bg-[#7950f2]/10 flex items-center justify-center text-[#7950f2]"><span class="material-symbols-outlined text-3xl">{getSubjectIcon(subj)}</span></div>
                                                                 </div>
                                                                 <div class="relative z-10 mt-auto">
-                                                                    <h3 class="font-display text-xl text-slate-900 dark:text-white mb-1 font-bold tracking-tight group-hover:text-primary transition-colors">{subj}</h3>
-                                                                    <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{groupedResourcesBySubject[subj].length} Files Indexed</p>
+                                                                    <h3 class="font-display text-xl text-black mb-1 font-bold tracking-tight group-hover:text-[#7950f2] transition-colors">{subj}</h3>
+                                                                    <p class="text-xs font-medium text-gray-400 uppercase tracking-widest">{groupedResourcesBySubject[subj].length} Files Indexed</p>
                                                                 </div>
                                                             </button>
                                                         ))}
@@ -540,16 +540,16 @@
                                             ) : (
                                                 <div class="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
                                                     <div class="w-full md:w-64 shrink-0 flex flex-col gap-2 sticky top-28 h-fit z-10">
-                                                        <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 pl-3 mb-2">Course Modules</h3>
+                                                        <h3 class="text-xs font-medium uppercase tracking-widest text-gray-400 pl-3 mb-2">Course Modules</h3>
                                                         {Object.keys(groupedResourcesBySubject).sort().map(subj => (
-                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class={`w-full text-left px-4 py-3 rounded-xl global-transition font-bold text-sm ${subj === activeSubject ? 'bg-primary text-white shadow-md' : 'hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400'}`}>
+                                                            <button key={subj} onClick={() => setActiveSubject(subj)} class={`w-full text-left px-4 py-3 rounded-[14px] transition font-semibold text-sm ${subj === activeSubject ? 'bg-[#7950f2] text-white shadow-sm' : 'hover:bg-gray-50 text-gray-500'}`}>
                                                                 {subj}
                                                             </button>
                                                         ))}
                                                     </div>
 
                                                     <div class="flex-1 max-w-4xl relative">
-                                                        <h1 class="font-display text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-8">{activeSubject}</h1>
+                                                        <h1 class="font-display text-2xl font-bold tracking-tight text-black mb-8">{activeSubject}</h1>
                                                         
                                                         <div class="relative space-y-6 pb-12">
                                                             {(() => {
@@ -564,28 +564,28 @@
                                                                             
                                                                             {/* TREE CONNECTOR ELEMENT TERMINATION PIPELINE */}
                                                                             {!isLastBlockElement && (
-                                                                                <div class="absolute left-[25px] top-7 bottom-[-24px] w-0.5 bg-slate-200 dark:bg-white/15 global-transition"></div>
+                                                                                <div class="absolute left-[25px] top-[31px] bottom-[-55px] w-0.5 bg-gray-100 transition"></div>
                                                                             )}
                                                                             
-                                                                            <div class="absolute left-[19px] top-6 w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-slate-50 dark:ring-[#050508] global-transition group-hover/block:scale-110 z-10"></div>
+                                                                            <div class="absolute left-[19px] top-6 w-3.5 h-3.5 rounded-full bg-[#7950f2] ring-4 ring-white transition group-hover/block:scale-110 z-10"></div>
                                                                             
-                                                                            <div class="bg-white/70 dark:bg-[#131315] border border-slate-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden global-transition">
-                                                                                <div onClick={() => toggleBlock(masterBlock)} class="flex justify-between items-center p-6 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.01] select-none">
+                                                                            <div class="bg-white border border-gray-100 rounded-[20px] shadow-none overflow-hidden transition">
+                                                                                <div onClick={() => toggleBlock(masterBlock)} class="flex justify-between items-center p-6 cursor-pointer hover:bg-gray-50 select-none">
                                                                                     <div class="flex items-center gap-4">
-                                                                                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[24px]">{isExpanded ? 'folder_open' : 'folder'}</span></div>
-                                                                                        <h2 class="font-display text-2xl text-slate-900 dark:text-white font-bold">{masterBlock}</h2>
+                                                                                        <div class="w-12 h-12 rounded-[14px] bg-[#7950f2]/10 flex items-center justify-center text-[#7950f2]"><span class="material-symbols-outlined text-[24px]">{isExpanded ? 'folder_open' : 'folder'}</span></div>
+                                                                                        <h2 class="font-display text-xl font-semibold tracking-tight text-black">{masterBlock}</h2>
                                                                                     </div>
-                                                                                    <span class={`material-symbols-outlined text-slate-400 global-transition ${isExpanded ? 'rotate-180' : ''}`}>expand_more</span>
+                                                                                    <span class={`material-symbols-outlined text-gray-400 transition ${isExpanded ? 'rotate-180' : ''}`}>expand_more</span>
                                                                                 </div>
                                                                                 
                                                                                 {/* INTERIOR EXPANDED COMPONENT CHANNELS */}
                                                                                 {isExpanded && (
-                                                                                    <div class="p-6 pt-2 space-y-8 bg-slate-50/50 dark:bg-black/20 border-t border-slate-100 dark:border-white/5">
+                                                                                    <div class="p-6 pt-2 space-y-4 bg-gray-50 border-t border-gray-100">
                                                                                         {Object.keys(activeSubjectMasterBlocks[masterBlock]).sort().map(subBlock => (
                                                                                             <div key={subBlock} class="space-y-4">
                                                                                                 {subBlock !== masterBlock && (
-                                                                                                    <h3 class="text-[11px] font-black uppercase tracking-widest text-primary flex items-center gap-3">
-                                                                                                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                                                                                    <h3 class="text-xs font-medium uppercase tracking-widest text-[#7950f2] flex items-center gap-3">
+                                                                                                        <span class="w-1.5 h-1.5 rounded-full bg-[#7950f2]"></span>
                                                                                                         {subBlock}
                                                                                                     </h3>
                                                                                                 )}
@@ -593,24 +593,24 @@
                                                                                                     {activeSubjectMasterBlocks[masterBlock][subBlock].map((item, idx) => {
                                                                                                         const routes = resolveDriveLinks(item.file_link);
                                                                                                         return isSingleRedirect ? (
-                                                                                                            <div key={idx} class="group flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl bg-white dark:bg-[#131315] border border-slate-200 dark:border-white/10 hover:border-primary/30 global-transition shadow-sm gap-4">
+                                                                                                            <div key={idx} class="group flex flex-col md:flex-row md:items-center justify-between p-4 rounded-[20px] bg-white border border-gray-100 hover:border-[#7950f2]/30 transition shadow-none gap-4">
                                                                                                                 <div class="flex items-start gap-4 w-full md:w-[75%]">
-                                                                                                                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5"><span class="material-symbols-outlined text-[20px]">terminal</span></div>
-                                                                                                                    <span class="text-[15px] text-slate-900 dark:text-white font-bold whitespace-normal break-words leading-snug pt-1">{item.topic}</span>
+                                                                                                                    <div class="w-10 h-10 rounded-[14px] bg-[#7950f2]/10 flex items-center justify-center text-[#7950f2] shrink-0 mt-0.5"><span class="material-symbols-outlined text-[20px]">terminal</span></div>
+                                                                                                                    <span class="text-sm font-medium text-gray-900 whitespace-normal break-words leading-snug pt-1">{item.topic}</span>
                                                                                                                 </div>
-                                                                                                                <a href={item.file_link} target="_blank" class="w-full md:w-auto bg-primary text-white rounded-lg px-5 py-2.5 flex items-center justify-center gap-2 hover:opacity-90 font-bold shrink-0 shadow-md global-transition">
+                                                                                                                <a href={item.file_link} target="_blank" class="w-full md:w-auto bg-[#d3ee7a] text-black rounded-[14px] px-6 py-3 flex items-center justify-center gap-2 hover:opacity-90 font-semibold shrink-0 transition">
                                                                                                                     <span>Open Link</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                                                                                                                 </a>
                                                                                                             </div>
                                                                                                         ) : (
-                                                                                                            <div key={idx} class="group flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl bg-white dark:bg-[#131315] border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 global-transition shadow-sm gap-4">
+                                                                                                            <div key={idx} class="group flex flex-col md:flex-row md:items-center justify-between p-4 rounded-[20px] bg-white border border-gray-100 hover:border-gray-200 transition shadow-none gap-4">
                                                                                                                 <div class="flex items-start gap-4 w-full md:w-[75%]">
-                                                                                                                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500 shrink-0 mt-0.5"><span class="material-symbols-outlined text-[20px]">description</span></div>
-                                                                                                                    <span class="text-[15px] text-slate-900 dark:text-white font-bold whitespace-normal break-words leading-snug pt-1">{item.topic}</span>
+                                                                                                                    <div class="w-10 h-10 rounded-[14px] bg-gray-50 flex items-center justify-center text-gray-500 shrink-0 mt-0.5 border border-gray-100"><span class="material-symbols-outlined text-[20px]">description</span></div>
+                                                                                                                    <span class="text-sm font-medium text-gray-900 whitespace-normal break-words leading-snug pt-1">{item.topic}</span>
                                                                                                                 </div>
                                                                                                                 <div class="flex items-center gap-2 w-full md:w-auto shrink-0 justify-end">
-                                                                                                                    <a href={routes.preview} target="_blank" class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-lg md:rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary/20 hover:text-primary global-transition"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
-                                                                                                                    <button onClick={() => { triggerSystemToastAlert(item.topic); window.open(routes.download, '_blank'); }} class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-lg md:rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-500 global-transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
+                                                                                                                    <a href={routes.preview} target="_blank" class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-[14px] md:rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#7950f2]/10 hover:text-[#7950f2] transition"><span class="material-symbols-outlined text-[18px]">visibility</span></a>
+                                                                                                                    <button onClick={() => { triggerSystemToastAlert(item.topic); window.open(routes.download, '_blank'); }} class="flex-1 md:flex-none w-auto md:w-10 h-10 rounded-[14px] md:rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#ccff00]/20 hover:text-black transition"><span class="material-symbols-outlined text-[18px]">download</span></button>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         );

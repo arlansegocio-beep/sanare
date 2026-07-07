@@ -1,0 +1,66 @@
+{
+  "theme": {
+    "name": "Soft Minimalist Lime Dashboard",
+    "visual_aesthetic": "Clean, modern, flat-design influenced dashboard with a vibrant, playful background counterbalanced by stark white, highly rounded container cards and subtle purple accents.",
+    "global_background": "bg-[#d3ee7a]",
+    "color_palette": {
+      "background": "bg-[#d3ee7a]",
+      "card_bg": "bg-white",
+      "text": {
+        "heading": "text-black",
+        "body": "text-gray-900",
+        "muted": "text-gray-500",
+        "light_muted": "text-gray-400"
+      },
+      "accent_primary": {
+        "solid": "bg-[#d3ee7a]",
+        "text": "text-[#d3ee7a]"
+      },
+      "accent_secondary": {
+        "solid": "bg-[#7950f2]",
+        "text": "text-[#7950f2]",
+        "light_bg": "bg-[#7950f2]/10"
+      },
+      "status": {
+        "success_bg": "bg-[#ccff00]",
+        "notification_badge": "bg-[#ccff00] text-black"
+      }
+    },
+    "border_radius": {
+      "main_cards": "rounded-[32px]",
+      "sub_cards_and_list_items": "rounded-[20px]",
+      "buttons": "rounded-[14px]",
+      "badges_and_pills": "rounded-full",
+      "special_asymmetric_card": "rounded-tl-[48px] rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px]"
+    },
+    "spacing_and_padding": {
+      "grid_gap": "gap-6",
+      "card_padding_large": "p-8",
+      "card_padding_medium": "p-6",
+      "list_item_padding": "p-4",
+      "element_spacing_y": "space-y-4",
+      "element_spacing_x": "space-x-3"
+    },
+    "shadows": {
+      "cards": "shadow-none",
+      "subtle_elevation": "shadow-sm"
+    },
+    "typography": {
+      "font_family": "font-sans",
+      "heading_1": "text-2xl font-bold tracking-tight text-black",
+      "heading_2": "text-xl font-semibold tracking-tight text-black",
+      "body_base": "text-sm font-medium text-gray-900",
+      "body_muted": "text-xs font-normal text-gray-500"
+    },
+    "component_mapping": {
+      "main_container_card": "bg-white rounded-[32px] p-6 shadow-none border border-transparent",
+      "asymmetric_header_card": "bg-white rounded-tl-[48px] rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px] p-8",
+      "list_row_item": "bg-white border border-gray-100 rounded-[20px] p-4 flex items-center justify-between",
+      "pill_badge_gray": "bg-gray-50 text-gray-700 text-xs font-medium px-4 py-2 rounded-full border border-gray-100",
+      "action_button_primary": "bg-[#d3ee7a] text-black font-semibold text-sm px-6 py-3 rounded-[14px] hover:opacity-90 transition",
+      "action_button_secondary": "bg-white text-black border border-gray-200 font-semibold text-sm px-6 py-3 rounded-[14px] hover:bg-gray-50 transition",
+      "toggle_switch_active": "w-11 h-6 bg-[#7950f2] rounded-full relative",
+      "circular_progress_ring": "text-[#7950f2] stroke-current"
+    }
+  }
+}
