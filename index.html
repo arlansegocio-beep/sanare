@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SANARE ULTRA | Premium Medical Hub</title>
+    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Premium Fontshare Typography System -->
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=geist@400,500,600,700&display=swap" rel="stylesheet">
+    <!-- Premium Phosphor Vector Icon Ecosystem -->
     <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
+    <!-- Supabase Core System Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -38,14 +42,16 @@
         }
     </style>
 </head>
-<body class="bg-[#d3ee7a] dark:bg-[#050508] text-gray-900 dark:text-white min-h-screen flex antialiased selection:bg-primary/30 selection:text-primary">
+<body class="bg-[#f8f9fa] dark:bg-[#050508] text-gray-900 dark:text-white min-h-screen flex antialiased selection:bg-primary/30 selection:text-primary">
 
     <div id="root" class="w-full flex min-h-screen"></div>
 
+    <!-- Core Runtime Compilers -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- React Engine Infrastructure Script -->
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
@@ -89,8 +95,8 @@
                     body.style.backgroundImage = "radial-gradient(circle at top right, rgba(180, 197, 255, 0.08), transparent 40%), radial-gradient(circle at bottom left, rgba(20, 30, 80, 0.18), transparent 45%), radial-gradient(circle at 15% 50%, rgba(20, 30, 80, 0.12), transparent 25%), radial-gradient(circle at 85% 30%, rgba(20, 30, 80, 0.12), transparent 25%)";
                 } else {
                     document.documentElement.classList.remove('dark');
-                    body.style.backgroundColor = "#d3ee7a";
-                    body.style.backgroundImage = "none";
+                    body.style.backgroundColor = "#f8f9fa";
+                    body.style.backgroundImage = "radial-gradient(circle at top left, rgba(211, 238, 122, 0.12), transparent 50%), radial-gradient(circle at 85% 20%, rgba(121, 80, 242, 0.04), transparent 40%), radial-gradient(circle at bottom left, rgba(211, 238, 122, 0.05), transparent 45%)";
                 }
             }, [isDark]);
 
