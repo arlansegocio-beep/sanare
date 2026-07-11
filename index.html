@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SU Archives</title>
-    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- Premium Fontshare Typography System -->
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=geist@400,500,600,700&display=swap" rel="stylesheet">
-    <!-- Premium Phosphor Vector Icon Ecosystem -->
     <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
-    <!-- Supabase Core System Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -42,16 +38,14 @@
         }
     </style>
 </head>
-<body class="bg-[#f8f9fa] dark:bg-[#050508] text-gray-900 dark:text-white min-h-screen flex antialiased selection:bg-primary/30 selection:text-primary">
+<body class="bg-[#f8f9fa] dark:bg-[#050508] text-gray-900 dark:text-white min-h-screen flex antialiased selection:bg-blue-500/30 selection:text-blue-400">
 
     <div id="root" class="w-full flex min-h-screen"></div>
 
-    <!-- Core Runtime Compilers -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- React Engine Infrastructure Script -->
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
@@ -204,7 +198,6 @@
                 setExpandedBlocks(prev => ({ ...prev, [blockName]: !prev[blockName] }));
             };
 
-            // --- CLASSY & HIGH-END DYNAMIC IDENTIFICATION ICON ENGINE ---
             const getSubjectIconData = (subj) => {
                 const clean = String(subj).toLowerCase();
                 let icon = 'ph-folder-open';
@@ -364,35 +357,35 @@
                     {currentPage === "dashboard" && (
                         <div class="w-full flex min-h-screen">
                             
-                            {/* FLUID COLLAPSIBLE HOVER SIDEBAR PANELS LAYER */}
-                            <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white dark:bg-[#0c0d12] glass-panel border-r border-gray-100 dark:border-white/5 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm">
-                                <div class="px-5 mb-8 flex items-center gap-3.5 shrink-0 overflow-hidden relative w-full">
+                            {/* FLUID COLLAPSIBLE HOVER SIDEBAR PANELS LAYER - WITH ABSOLUTE OVERFLOW CLIPPING PROTECTION */}
+                            <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full bg-white dark:bg-[#0c0d12] glass-panel border-r border-gray-100 dark:border-white/5 py-8 z-50 transition-all duration-300 ease-in-out w-20 hover:w-64 group/sidebar shadow-sm overflow-hidden">
+                                <div class="px-5 mb-8 flex items-center gap-3.5 shrink-0 overflow-hidden w-full h-10">
                                     <div class="w-10 h-10 shrink-0 rounded-[14px] bg-blue-600/10 border border-blue-600/20 flex items-center justify-center shadow-sm">
                                         <i class="ph ph-first-aid text-blue-600 text-xl"></i>
                                     </div>
-                                    <div class="transition-all duration-300 flex flex-col justify-center whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-40">
-                                        <h1 class="font-display font-extrabold text-[17px] text-gray-900 dark:text-white tracking-widest leading-none">SU ARCHIVES</h1>
-                                        <p class="text-[10px] italic text-gray-400 dark:text-gray-500 font-medium leading-none mt-1">to heal beyond</p>
+                                    <div class="transition-all duration-300 flex flex-col justify-center whitespace-nowrap overflow-hidden opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-40 pl-1">
+                                        <h1 class="font-display font-extrabold text-[16px] text-gray-900 dark:text-white tracking-widest leading-none">SU ARCHIVES</h1>
+                                        <p class="text-[9px] italic text-gray-400 dark:text-gray-500 font-medium leading-none mt-1">to heal beyond</p>
                                     </div>
                                 </div>
-                                <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto no-scrollbar text-left overflow-x-hidden">
+                                <nav class="flex-1 px-3 space-y-1.5 overflow-y-auto no-scrollbar text-left overflow-x-hidden w-full">
                                     {[
-                                        { id: "dashboard", icon: "ph-terminal-window" },
-                                        { id: "books", icon: "ph-books" },
-                                        { id: "Note", icon: "ph-file-text" },
-                                        { id: "Sud_An", icon: "ph-notebook" },
-                                        { id: "Fresh_Sud_An", icon: "ph-newspaper" },
-                                        { id: "Questionnaire", icon: "ph-brain" },
-                                        { id: "folders", icon: "ph-folder-user" },
-                                        { id: "calendar", icon: "ph-calendar-blank" }
+                                        { id: "dashboard", icon: "ph-terminal-window", label: "Overview Dashboard" },
+                                        { id: "books", icon: "ph-books", label: "Medical Books" },
+                                        { id: "Note", icon: "ph-file-text", label: "Lecture Notes" },
+                                        { id: "Sud_An", icon: "ph-notebook", label: "Recalls Archives" },
+                                        { id: "Fresh_Sud_An", icon: "ph-newspaper", label: "New Recalls" },
+                                        { id: "Questionnaire", icon: "ph-brain", label: "Interactive Quizzes" },
+                                        { id: "folders", icon: "ph-folder-user", label: "Batch Folders" },
+                                        { id: "calendar", icon: "ph-calendar-blank", label: "School Calendar" }
                                     ].map(tab => (
                                         <button key={tab.id} onClick={() => setCurrentTab(tab.id)} class={`w-full flex items-center gap-3 p-3 rounded-[14px] transition whitespace-nowrap overflow-hidden ${currentTab === tab.id ? "bg-blue-600/10 dark:bg-blue-600/25 border border-blue-600/20 text-blue-600 dark:text-[#b4c5ff] font-bold" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"}`}>
                                             <i class={`ph ${tab.icon} shrink-0 text-[20px]`}></i>
-                                            <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto">{TabNames[tab.id]}</span>
+                                            <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto overflow-hidden text-ellipsis">{tab.label}</span>
                                         </button>
                                     ))}
                                 </nav>
-                                <div class="px-4 mt-auto pt-4 border-t border-gray-100 dark:border-white/5 space-y-2 overflow-hidden">
+                                <div class="px-3 mt-auto pt-4 border-t border-gray-100 dark:border-white/5 space-y-2 overflow-hidden w-full shrink-0">
                                     <button onClick={() => setIsDark(!isDark)} class="w-full flex items-center gap-3 p-3 rounded-[14px] hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 font-bold transition whitespace-nowrap overflow-hidden">
                                         <i class={`ph ${isDark ? 'ph-sun' : 'ph-moon'} shrink-0 text-[20px]`}></i>
                                         <span class="transition-all duration-300 opacity-0 w-0 group-hover/sidebar:opacity-100 group-hover/sidebar:w-auto">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
@@ -404,12 +397,12 @@
                                 </div>
                             </aside>
 
-                            {/* CORE CONTROL WORKSPACE LAYOUT PANELS */}
+                            {/* CORE CONTROL WORKSPACE LAYOUT PANELS - SAFE SEGREGATED MARGIN WIDTHS */}
                             <main class="flex-1 flex flex-col relative min-h-screen transition-all duration-300 ease-in-out md:ml-20">
                                 
                                 {/* DUAL-LAYER RESPONSIVE APP COMPACT HEADER STRIP */}
                                 <header class="sticky top-0 z-40 flex flex-col w-full bg-white dark:bg-[#0c0d12] glass-panel border-b border-gray-100 dark:border-white/5 shadow-sm">
-                                    <div class="flex flex-col lg:flex-row lg:items-center justify-between px-6 py-4 gap-4 w-full">
+                                    <div class="flex flex-col lg:flex-row lg:items-center justify-between px-6 py-4 gap-4 w-full pl-6 md:pl-8">
                                         
                                         {/* TOP FLEXROW NODE: TITLE + MOBILE GREETING BADGE */}
                                         <div class="flex items-center justify-between w-full lg:w-auto">
@@ -460,8 +453,72 @@
                                     </div>
                                 </header>
 
-                                <div class="flex-1 w-full relative p-6 md:p-8 max-w-[1600px] mx-auto pb-32">
+                                <div class="flex-1 w-full relative p-6 md:p-8 max-w-[1600px] mx-auto pb-32 pl-6 md:pl-10">
                                     
+                                    {/* COMPONENT MODULE: OVERVIEW DASHBOARD */}
+                                    {currentTab === "dashboard" && (
+                                        <div class="space-y-6 text-left max-w-4xl mx-auto">
+                                            {/* BULLETIN SUMMARY ANNOUNCEMENT NODE */}
+                                            <div class="bg-white dark:bg-[#0c0d12] rounded-tl-[48px] rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px] p-6 md:p-8 shadow-none border border-gray-100 dark:border-white/5 glass-panel">
+                                                <div class="flex items-start gap-4">
+                                                    <div class="p-3 bg-blue-600/10 rounded-[14px] text-blue-600 flex items-center justify-center shrink-0">
+                                                        <i class="ph ph-megaphone text-2xl"></i>
+                                                    </div>
+                                                    <div class="flex-1 space-y-1">
+                                                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-1">
+                                                            <h3 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white font-display">Latest Bulletin Notice</h3>
+                                                            {announcement && <span class="text-xs font-normal text-gray-400 dark:text-gray-500">{announcement.date_posted}</span>}
+                                                        </div>
+                                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed mt-2">
+                                                            {announcement ? announcement.announcement_text : "No active bulletin notices at this time. Check back later for updates."}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* 3-TIER WEEKLY CALENDAR OVERVIEW HEATMAPS */}
+                                            <div class="bg-white dark:bg-[#0c0d12] rounded-[32px] p-6 shadow-none border border-gray-100 dark:border-white/5 glass-panel space-y-4">
+                                                <div class="flex items-center gap-3 border-b border-gray-100 dark:border-white/5 pb-4">
+                                                    <i class="ph ph-calendar-clock text-blue-600 text-2xl"></i>
+                                                    <h2 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white font-display">Weekly Timetable Schedule</h2>
+                                                </div>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                                                    {daysNames.map((day, idx) => {
+                                                        const i = idx + 1;
+                                                        const dayEvents = weeklySchedule.filter(item => item.day_of_week === i);
+                                                        
+                                                        let heatmapStyle = "";
+                                                        let badgeStyle = "";
+                                                        if (i < currentDayInt) {
+                                                            heatmapStyle = "bg-gray-50 dark:bg-[#16171d]/40 border-gray-100 dark:border-white/5 opacity-40 select-none";
+                                                            badgeStyle = "text-gray-400 dark:text-gray-600 font-bold";
+                                                        } else if (i === currentDayInt) {
+                                                            heatmapStyle = "bg-blue-600/10 dark:bg-blue-600/20 border-blue-600/40 dark:border-blue-600/60 ring-1 ring-blue-600/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]";
+                                                            badgeStyle = "text-blue-600 dark:text-[#b4c5ff] font-black";
+                                                        } else {
+                                                            heatmapStyle = "bg-white dark:bg-[#16171d] border border-gray-100 dark:border-white/5";
+                                                            badgeStyle = "text-gray-500 dark:text-gray-400 font-bold";
+                                                        }
+
+                                                        return (
+                                                            <div key={day} class={`rounded-[20px] p-4 border flex flex-col min-h-[140px] transition ${heatmapStyle}`}>
+                                                                <h4 class={`text-xs uppercase tracking-wider ${badgeStyle}`}>{day}</h4>
+                                                                {dayEvents.length === 0 ? (
+                                                                    <p class="text-xs font-normal text-gray-400 dark:text-gray-500 italic pt-3">Clear Schedule</p>
+                                                                ) : dayEvents.map((ev, eIdx) => (
+                                                                    <div key={eIdx} class="border-t border-gray-100 dark:border-white/5 mt-2 pt-2 space-y-1">
+                                                                        <p class="text-xs font-medium text-gray-900 dark:text-gray-200 whitespace-normal break-words leading-tight">{ev.event_title}</p>
+                                                                        <p class="text-xs font-normal text-gray-400 dark:text-gray-500 font-mono">{ev.event_date}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* COMPONENT MODULE: MEDICAL BOOKS MATRICES */}
                                     {currentTab === "books" && (
                                         <div class="text-left w-full h-full global-transition">
@@ -471,7 +528,7 @@
                                                         <h2 class="font-display text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Subject Directories</h2>
                                                         <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Select a subject library to retrieve study files.</p>
                                                     </div>
-                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+                                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
                                                         {Object.keys(groupedBooks).length === 0 ? (
                                                             <div class="col-span-full text-center text-sm text-gray-500 dark:text-gray-400 italic py-12 border border-dashed border-gray-200 dark:border-white/10 rounded-[32px]">
                                                                 No library entries found.
@@ -479,13 +536,13 @@
                                                         ) : Object.keys(groupedBooks).sort().map(subj => {
                                                             const iData = getSubjectIconData(subj);
                                                             return (
-                                                                <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white dark:bg-[#0c0d12] border border-gray-100 dark:border-white/5 shadow-sm rounded-[20px] p-4 flex flex-row items-center gap-4 group relative overflow-hidden text-left w-full hover:border-blue-600/40 dark:hover:border-blue-600/60 global-transition hover:shadow-md hover:-translate-y-0.5">
+                                                                <button key={subj} title={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white dark:bg-[#0c0d12] border border-gray-100 dark:border-white/5 shadow-sm rounded-[20px] p-4 flex flex-row items-center gap-4 group relative overflow-hidden text-left w-full hover:border-blue-600/40 dark:hover:border-blue-600/60 global-transition hover:shadow-md hover:-translate-y-0.5">
                                                                     <div class={`w-12 h-12 rounded-[14px] flex items-center justify-center text-xl shadow-inner border border-black/5 dark:border-white/5 shrink-0 ${iData.colorClass}`}>
                                                                         <i class={`ph ${iData.icon} text-2xl`}></i>
                                                                     </div>
-                                                                    <div class="flex flex-col min-w-0">
-                                                                        <h3 class="font-display text-base font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors truncate">{subj}</h3>
-                                                                        <p class="text-[11px] font-sans font-medium text-gray-400 dark:text-gray-500 tracking-wide mt-0.5">{groupedBooks[subj].length} Resources Available</p>
+                                                                    <div class="flex flex-col min-w-0 flex-1">
+                                                                        <h3 class="font-display text-base font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors truncate w-full">{subj}</h3>
+                                                                        <p class="text-[11px] font-sans font-medium text-gray-400 dark:text-gray-500 tracking-wide mt-0.5 truncate">{groupedBooks[subj].length} Resources Available</p>
                                                                     </div>
                                                                 </button>
                                                             );
@@ -564,13 +621,13 @@
                                                         ) : Object.keys(groupedResourcesBySubject).sort().map(subj => {
                                                             const iData = getSubjectIconData(subj);
                                                             return (
-                                                                <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white dark:bg-[#0c0d12] border border-gray-100 dark:border-white/5 shadow-sm rounded-[20px] p-4 flex flex-row items-center gap-4 group relative overflow-hidden text-left w-full shadow-none hover:border-blue-600/40 dark:hover:border-blue-600/60 global-transition hover:shadow-md hover:-translate-y-0.5">
+                                                                <button key={subj} title={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white dark:bg-[#0c0d12] border border-gray-100 dark:border-white/5 shadow-sm rounded-[20px] p-4 flex flex-row items-center gap-4 group relative overflow-hidden text-left w-full shadow-none hover:border-blue-600/40 dark:hover:border-blue-600/60 global-transition hover:shadow-md hover:-translate-y-0.5">
                                                                     <div class={`w-12 h-12 rounded-[14px] flex items-center justify-center text-xl shadow-inner border border-black/5 dark:border-white/5 shrink-0 ${iData.colorClass}`}>
                                                                         <i class={`ph ${iData.icon} text-2xl`}></i>
                                                                     </div>
-                                                                    <div class="flex flex-col min-w-0">
-                                                                        <h3 class="font-display text-base font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors truncate">{subj}</h3>
-                                                                        <p class="text-[11px] font-sans font-medium text-gray-400 dark:text-gray-500 tracking-wide mt-0.5">{groupedResourcesBySubject[subj].length} Files Indexed</p>
+                                                                    <div class="flex flex-col min-w-0 flex-1">
+                                                                        <h3 class="font-display text-base font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors truncate w-full">{subj}</h3>
+                                                                        <p class="text-[11px] font-sans font-medium text-gray-400 dark:text-gray-500 tracking-wide mt-0.5 truncate">{groupedResourcesBySubject[subj].length} Files Indexed</p>
                                                                     </div>
                                                                 </button>
                                                             );
