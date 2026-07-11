@@ -228,6 +228,9 @@
                 } else if (clean.includes('micro') || clean.includes('para')) {
                     icon = 'ph-virus';
                     colorClass = 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30';
+                } else if (clean.includes('fcm') || clean.includes('family') || clean.includes('community')) {
+                    icon = 'ph-users';
+                    colorClass = 'text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-950/30';
                 } else if (clean.includes('medicine')) {
                     icon = 'ph-heartbeat';
                     colorClass = 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/30';
@@ -330,51 +333,31 @@
                         ))}
                     </div>
 
-                    {/* GATE LOGIN CORE PANEL: PREMIUM RADIAL GLASS EMBEDDED SHOWCASE VIEW */}
+                    {/* GATE LOGIN CORE PANEL: CLEAN RADIAL GLASS PREMIUM SINGLE HUB PITCH PANEL */}
                     {currentPage === "auth" && (
                         <div class="flex-1 min-h-screen flex flex-col items-center justify-center px-4 relative bg-[#050508] text-white overflow-hidden selection:bg-blue-500/30 selection:text-blue-400">
-                            {/* Cosmic Glow Matrices */}
+                            {/* Cosmic Glow Dynamic Gradient Fields */}
                             <div class="absolute inset-0 z-0 pointer-events-none">
                                 <div class="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-600/15 blur-[120px]"></div>
                                 <div class="absolute bottom-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-800/20 blur-[140px]"></div>
                             </div>
                             
-                            {/* Showcase Display Branding Canvas */}
-                            <div class="relative z-10 max-w-3xl w-full text-center space-y-10 px-6 py-12">
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 glass-panel text-xs text-blue-400 font-bold tracking-widest uppercase">
-                                    <i class="ph ph-sparkle text-sm animate-pulse"></i>
-                                    <span>Project Showcase</span>
-                                </div>
-                                
+                            {/* Display Core Branding Canvas Row */}
+                            <div class="relative z-10 max-w-3xl w-full text-center space-y-12 px-6 py-12">
                                 <div class="space-y-4">
-                                    <h1 class="text-5xl md:text-7xl font-black font-display tracking-tight leading-none bg-gradient-to-r from-white via-slate-200 to-blue-400 bg-clip-text text-transparent">
+                                    <h1 class="text-6xl md:text-8xl font-black font-display tracking-tighter leading-none bg-gradient-to-b from-white via-slate-100 to-blue-500 bg-clip-text text-transparent drop-shadow-sm select-none animate-fade-in">
                                         SU ARCHIVES
                                     </h1>
-                                    <p class="text-lg md:text-xl font-medium text-gray-400 max-w-xl mx-auto leading-relaxed">
-                                        Our customized class hub for medical school notes, recalls, and textbooks. Built to save us time and keep us organized during stressful exam weeks.
-                                    </p>
                                 </div>
 
-                                {/* Central Action Trigger Glass Capsule */}
-                                <div class="max-w-md mx-auto p-6 rounded-[32px] bg-white/[0.02] border border-white/5 glass-panel shadow-[0_30px_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl space-y-4">
+                                {/* Central Action Capsule Core Wrapper */}
+                                <div class="max-w-md mx-auto p-8 rounded-[32px] bg-white/[0.02] border border-white/5 glass-panel shadow-[0_30px_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl space-y-4">
                                     <button onClick={async () => { setAuthError(""); const { error } = await coreClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + window.location.pathname } }); if (error) setAuthError(error.message); }} disabled={isVerifying} class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-[16px] transition-all flex items-center justify-center space-x-3 shadow-lg shadow-blue-600/20 group hover:scale-[1.02] active:scale-[0.98]">
                                         <i class="ph ph-google-logo text-lg group-hover:rotate-12 global-transition"></i>
                                         <span>Authorize via Google Account</span>
                                     </button>
                                     
                                     {authError && <div class="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 py-2 px-3 rounded-[14px]">{authError}</div>}
-                                </div>
-
-                                {/* Bottom Tech Badging Infrastructure */}
-                                <div class="flex flex-wrap items-center justify-center gap-4 pt-6">
-                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/5 text-xs font-semibold text-gray-400 font-mono">
-                                        <i class="ph ph-atom text-blue-400"></i>
-                                        <span>Built with React & Tailwind</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/5 text-xs font-semibold text-gray-400 font-mono">
-                                        <i class="ph ph-database text-blue-400"></i>
-                                        <span>Real-time Supabase Cloud Sync</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -400,8 +383,8 @@
                                         { id: "dashboard", icon: "ph-terminal-window" },
                                         { id: "books", icon: "ph-books" },
                                         { id: "Note", icon: "ph-file-text" },
-                                        { id: "Summary", icon: "ph-notebook" }, 
-                                        { id: "Sud_An", icon: "ph-newspaper" },
+                                        { id: "Sud_An", icon: "ph-notebook" },
+                                        { id: "Fresh_Sud_An", icon: "ph-newspaper" },
                                         { id: "Questionnaire", icon: "ph-brain" },
                                         { id: "folders", icon: "ph-folder-user" },
                                         { id: "calendar", icon: "ph-calendar-blank" }
@@ -449,7 +432,7 @@
                                         
                                         {/* LOWER/RIGHT FLEXROW NODE: FULLY UNLOCKED ADAPTIVE SEGMENT FILTERS */}
                                         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:ml-auto">
-                                            {["Note", "Summary", "Sud_An", "Questionnaire", "folders"].includes(currentTab) && (
+                                            {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire", "folders"].includes(currentTab) && (
                                                 <div class="flex flex-row items-center gap-2.5 w-full lg:w-auto">
                                                     {/* Batch Selector */}
                                                     <div class="flex bg-gray-50 dark:bg-[#16171d] p-1 rounded-full border border-gray-100 dark:border-white/5 shadow-inner flex-1 sm:flex-initial justify-around">
@@ -633,7 +616,7 @@
                                     )}
 
                                     {/* COMPONENT MODULE: LECTURE NOTES & RECALL DIRECTORIES */}
-                                    {["Note", "Summary", "Sud_An", "Questionnaire"].includes(currentTab) && (
+                                    {["Note", "Sud_An", "Fresh_Sud_An", "Questionnaire"].includes(currentTab) && (
                                         <div class="text-left w-full h-full global-transition">
                                             
                                             {!activeSubject ? (
@@ -817,8 +800,8 @@
                                     { id: "dashboard", icon: "ph-terminal-window", label: "Overview" },
                                     { id: "books", icon: "ph-books", label: "Books" },
                                     { id: "Note", icon: "ph-file-text", label: "Notes" },
-                                    { id: "Summary", icon: "ph-notebook", label: "Summaries" },
-                                    { id: "Sud_An", icon: "ph-newspaper", label: "Recalls" },
+                                    { id: "Sud_An", icon: "ph-notebook", label: "Recalls" },
+                                    { id: "Fresh_Sud_An", icon: "ph-newspaper", label: "New" },
                                     { id: "Questionnaire", icon: "ph-brain", label: "Quizzes" },
                                     { id: "folders", icon: "ph-folder-user", label: "Archives" },
                                     { id: "calendar", icon: "ph-calendar-blank", label: "Calendar" }
