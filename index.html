@@ -64,7 +64,6 @@
         const coreClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // --- PHASE 1: ADMIN WHITELIST CHECKER ---
-        // Change or add the Google emails of authorized officers here
         const ADMIN_WHITELIST = [
             "arlan.segocio@gmail.com",
         ];
@@ -114,10 +113,10 @@
                 file_link: ""
             });
 
-            // Form 2: Bulletin State (Configured to exact announcement columns)
+            // Form 2: Bulletin State
             const [bulletinForm, setBulletinForm] = useState({
-                title: "Class Notice",
-                announcement_text: ""
+                announcement_text: "",
+                date_posted: ""
             });
 
             // Form 3: Class Schedule State
@@ -127,12 +126,12 @@
                 event_date: ""
             });
 
-            // check if current user is Whitelisted as an admin officer
             const isUserAdminOfficer = useMemo(() => {
                 if (!currentUserEmail) return false;
                 return ADMIN_WHITELIST.includes(currentUserEmail.toLowerCase().trim());
             }, [currentUserEmail]);
 
+            // Ambient Theme Sync Monitor Listener
             useEffect(() => {
                 const body = document.body;
                 if (isDark) {
@@ -146,7 +145,7 @@
                 }
             }, [isDark]);
 
-            // Quick Scroll Observer
+            // Window Scroll Listener for Floating Anchor
             useEffect(() => {
                 const handleScroll = () => {
                     if (window.scrollY > 300) setShowScrollTop(true);
@@ -203,6 +202,7 @@
                 return () => subscription.unsubscribe();
             }, []);
 
+            // --- CLOUD SOURCE SYNCHRONIZATION ---
             async function fetchConfig() {
                 const { data } = await coreClient.from('system_config').select('*');
                 if (data) {
@@ -211,22 +211,12 @@
                     setConfigMap(mapped);
                 }
             }
-            
-            // fetch latest singular announcement using correct table and sorted created_at order
             async function fetchAnnouncements() {
-                const { data } = await coreClient
-                    .from('announcement')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(1);
-                
-                if (data && data.length > 0) {
-                    setAnnouncement(data[0]);
-                } else {
-                    setAnnouncement(null);
-                }
+                // Fetching from announcements table ordered by created_at
+                const { data } = await coreClient.from('announcements').select('*').order('created_at', { ascending: false }).limit(1);
+                if (data && data.length > 0) setAnnouncement(data[0]);
+                else setAnnouncement(null);
             }
-
             async function fetchTimetable() {
                 const { data } = await coreClient.from('weekly_schedule').select('*').order('day_of_week', { ascending: true });
                 if (data) setWeeklySchedule(data);
@@ -246,7 +236,7 @@
 
             const triggerSystemToastAlert = (topicTitle) => {
                 const hashId = Date.now();
-                setToasts(prev => [...prev, { id: hashId, title: topicTitle }]);
+                setToasts(prev => [...prev, { id: hashId, title: toastTitle => topicTitle }]);
                 setTimeout(() => {
                     setToasts(prev => prev.filter(toast => toast.id !== hashId));
                 }, 4000);
@@ -339,17 +329,7 @@
                 return <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0 font-mono">RECALL</span>;
             };
 
-            // Format UTC timestamps nicely for announcements display
-            const formatPostedDate = (timestamp) => {
-                if (!timestamp) return "";
-                try {
-                    const date = new Date(timestamp);
-                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                } catch (e) {
-                    return "";
-                }
-            };
-
+            // --- DATA ARRAY MANIFEST MAPPING POINTERS ---
             const groupedBooks = useMemo(() => {
                 const map = {};
                 books.forEach(b => {
@@ -372,6 +352,7 @@
                 return map;
             }, [filteredResources]);
 
+            // --- DEEP SPECIFIC FILE MATCH SCANNERS ---
             const searchedDeepFiles = useMemo(() => {
                 if (!searchQuery.trim()) return [];
                 return filteredResources.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase().trim()));
@@ -420,10 +401,11 @@
                 calendar: "School Calendar"
             };
 
+            // --- ADMINISTRATIVE WRITE REQUEST PUBLISH HANDLERS ---
             const handlePublishAsset = async (e) => {
                 e.preventDefault();
                 if (!assetForm.topic || !assetForm.file_link) {
-                    triggerSystemToastAlert("Error: Please provide a topic title and a connection link.");
+                    alert("Please provide both a topic title and a valid connection link.");
                     return;
                 }
                 setIsPublishing(true);
@@ -445,35 +427,35 @@
                     setAssetForm(prev => ({ ...prev, topic: "", file_link: "" }));
                     await fetchAcademicResources();
                 } catch (err) {
-                    triggerSystemToastAlert(`Upload error: ${err.message}`);
+                    alert(`Failed to upload asset: ${err.message}`);
                 } finally {
                     setIsPublishing(false);
                 }
             };
 
-            // publish bulletin directly using correct singular table name and content schema parameters
             const handlePublishBulletin = async (e) => {
                 e.preventDefault();
                 if (!bulletinForm.announcement_text) {
-                    triggerSystemToastAlert("Error: Please write the announcement text first.");
+                    alert("Please write the announcement text first.");
                     return;
                 }
                 setIsPublishing(true);
                 try {
+                    // Mapping payload directly to the announcements table using correct columns
                     const payload = {
-                        title: bulletinForm.title.trim() || "Class Notice",
+                        title: "Bulletin Notice",
                         content: bulletinForm.announcement_text.trim(),
-                        is_high_priority: true
+                        is_high_priority: false
                     };
 
-                    const { error } = await coreClient.from('announcement').insert([payload]);
+                    const { error } = await coreClient.from('announcements').insert([payload]);
                     if (error) throw error;
 
                     triggerSystemToastAlert("Latest bulletin announcement published live!");
-                    setBulletinForm({ title: "Class Notice", announcement_text: "" });
+                    setBulletinForm({ announcement_text: "", date_posted: "" });
                     await fetchAnnouncements();
                 } catch (err) {
-                    triggerSystemToastAlert(`Database error: ${err.message}`);
+                    alert(`Failed to push bulletin: ${err.message}`);
                 } finally {
                     setIsPublishing(false);
                 }
@@ -482,7 +464,7 @@
             const handlePublishSchedule = async (e) => {
                 e.preventDefault();
                 if (!scheduleForm.event_title || !scheduleForm.event_date) {
-                    triggerSystemToastAlert("Error: Please enter class title and hours.");
+                    alert("Please enter both the class name and class schedule hours.");
                     return;
                 }
                 setIsPublishing(true);
@@ -500,7 +482,7 @@
                     setScheduleForm({ day_of_week: 1, event_title: "", event_date: "" });
                     await fetchTimetable();
                 } catch (err) {
-                    triggerSystemToastAlert(`Scheduling error: ${err.message}`);
+                    alert(`Failed to schedule event: ${err.message}`);
                 } finally {
                     setIsPublishing(false);
                 }
@@ -524,7 +506,7 @@
                                     <i class="ph ph-check-circle text-sm font-bold"></i>
                                 </div>
                                 <div class="flex-1 overflow-hidden">
-                                    <h4 class="text-xs font-bold text-gray-900 dark:text-white font-display">System Action Processed</h4>
+                                    <h4 class="text-xs font-bold text-gray-900 dark:text-white font-display">System Download Activated</h4>
                                     <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium leading-tight mt-1 whitespace-normal break-words">{toast.title}</p>
                                 </div>
                             </div>
@@ -620,8 +602,6 @@
                                             <h2 class="font-bold text-lg md:text-xl font-display tracking-tight text-gray-900 dark:text-white">
                                                 {isAdminMode ? "Admin Control Console" : TabNames[currentTab]}
                                             </h2>
-                                            
-                                            {/* Mobile Active Identity Indicator Badge */}
                                             <div class="lg:hidden flex items-center gap-2 bg-blue-600/10 dark:bg-blue-600/20 border border-blue-600/30 dark:border-blue-600/40 px-3 py-1.5 rounded-full shadow-[0_2px_10px_rgba(59,130,246,0.1)] shrink-0">
                                                 <span class="relative flex h-2 w-2">
                                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -649,7 +629,6 @@
                                                 </div>
                                             )}
 
-                                            {/* Desktop Premium Identity Badge */}
                                             <div class="hidden lg:flex items-center gap-2.5 bg-blue-600/10 dark:bg-blue-600/20 border border-blue-600/30 dark:border-blue-600/40 px-4 py-2 rounded-full shadow-[0_2px_10px_rgba(59,130,246,0.1)] shrink-0 global-transition hover:scale-105">
                                                 <span class="relative flex h-2 w-2">
                                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -683,7 +662,7 @@
                                             {/* GRID MODULES FOR INPUTS */}
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                 
-                                                {/* FORM 1: TYPO-PROOF ACADEMIC RESOURCE PUBLISHER */}
+                                                {/* FORM 1: STUDY ASSET PUBLISHER */}
                                                 <div class="p-6 rounded-[28px] bg-white dark:bg-[#0e131f] border border-gray-100 dark:border-blue-500/10 shadow-sm space-y-4">
                                                     <div class="flex items-center gap-2.5 border-b border-gray-100 dark:border-white/5 pb-3">
                                                         <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500"><i class="ph ph-cloud-arrow-up text-lg"></i></div>
@@ -770,13 +749,9 @@
                                                     <div class="p-6 rounded-[28px] bg-white dark:bg-[#0e131f] border border-gray-100 dark:border-blue-500/10 shadow-sm space-y-4 flex-1">
                                                         <div class="flex items-center gap-2.5 border-b border-gray-100 dark:border-white/5 pb-3">
                                                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i class="ph ph-megaphone-simple text-lg"></i></div>
-                                                            <h3 class="font-display font-bold text-gray-900 dark:text-white">Push Bulletin Announcement</h3>
+                                                            <h3 class="font-display font-bold text-gray-900 dark:text-white font-bold">Push Bulletin Announcement</h3>
                                                         </div>
                                                         <form onSubmit={handlePublishBulletin} class="space-y-3 text-xs">
-                                                            <div>
-                                                                <label class="block font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Announcement Title Header</label>
-                                                                <input type="text" placeholder="e.g. Exam Schedule Notice" value={bulletinForm.title} onChange={e => setBulletinForm({...bulletinForm, title: e.target.value})} class="w-full bg-gray-50 dark:bg-[#16171d] border border-gray-200 dark:border-white/5 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-blue-600 focus:border-transparent text-gray-900 dark:text-white" />
-                                                            </div>
                                                             <div>
                                                                 <label class="block font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Announcement Message (Supports Line Breaks)</label>
                                                                 <textarea rows="4" placeholder="Type announcement notices..." value={bulletinForm.announcement_text} onChange={e => setBulletinForm({...bulletinForm, announcement_text: e.target.value})} class="w-full bg-gray-50 dark:bg-[#16171d] border border-gray-200 dark:border-white/5 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-blue-600 focus:border-transparent text-gray-900 dark:text-white resize-none"></textarea>
@@ -792,7 +767,7 @@
                                                     <div class="p-6 rounded-[28px] bg-white dark:bg-[#0e131f] border border-gray-100 dark:border-blue-500/10 shadow-sm space-y-4 flex-1">
                                                         <div class="flex items-center gap-2.5 border-b border-gray-100 dark:border-white/5 pb-3">
                                                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500"><i class="ph ph-calendar-blank text-lg"></i></div>
-                                                            <h3 class="font-display font-bold text-gray-900 dark:text-white">Map Timetable Event</h3>
+                                                            <h3 class="font-display font-bold text-gray-900 dark:text-white font-bold">Map Timetable Event</h3>
                                                         </div>
                                                         <form onSubmit={handlePublishSchedule} class="space-y-3 text-xs">
                                                             <div class="grid grid-cols-2 gap-3">
@@ -830,7 +805,7 @@
                                         /* TRADITIONAL TAB INTERFACES */
                                         <React.Fragment>
                                             
-                                            {/* OVERVIEW TAB RESTORED */}
+                                            {/* OVERVIEW TAB */}
                                             {currentTab === "dashboard" && (
                                                 <div class="space-y-6 text-left max-w-5xl mx-auto animate-fade-in">
                                                     
@@ -857,7 +832,7 @@
                                                         )}
                                                     </div>
 
-                                                    {/* BULLETIN SUMMARY ANNOUNCEMENT NODE (WITH PRE-LINE LINEBREAK SUPPORT) */}
+                                                    {/* BULLETIN SUMMARY ANNOUNCEMENT NODE */}
                                                     <div class="bg-white dark:bg-[#0e131f] border border-gray-100 dark:border-blue-500/10 rounded-tl-[48px] rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px] p-6 md:p-8 shadow-none glass-panel">
                                                         <div class="flex items-start gap-4">
                                                             <div class="p-3 bg-blue-600/10 rounded-[14px] text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -865,10 +840,12 @@
                                                             </div>
                                                             <div class="flex-1 space-y-1">
                                                                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-1">
-                                                                    <h3 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white font-display">
-                                                                        {announcement ? announcement.title : "Latest Bulletin Notice"}
-                                                                    </h3>
-                                                                    {announcement && <span class="text-xs font-normal text-gray-400 dark:text-gray-500">{formatPostedDate(announcement.created_at)}</span>}
+                                                                    <h3 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white font-display">Latest Bulletin Notice</h3>
+                                                                    {announcement && (
+                                                                        <span class="text-xs font-normal text-gray-400 dark:text-gray-500">
+                                                                            {announcement.created_at ? new Date(announcement.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                                                                        </span>
+                                                                    )}
                                                                 </div>
                                                                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 leading-relaxed mt-2 whitespace-pre-line">
                                                                     {announcement ? announcement.content : "No active bulletin notices at this time. Check back later for updates."}
@@ -937,7 +914,7 @@
                                                         </div>
                                                     </div>
 
-                                                    {/* DEEP INTEGRATION MATCHING PORTAL */}
+                                                    {/* DEEP BOOK RESULTS */}
                                                     {searchQuery.trim() ? (
                                                         <div class="max-w-5xl mx-auto space-y-3 animate-fade-in">
                                                             <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest pl-1 mb-4">Deep Book Results ({searchedDeepBooks.length})</h3>
@@ -1070,7 +1047,7 @@
                                                                         const iData = getSubjectIconData(subj);
                                                                         return (
                                                                             <button key={subj} onClick={() => setActiveSubject(subj)} class="glass-panel bg-white dark:bg-[#0e131f] border border-gray-100 dark:border-blue-500/10 shadow-sm rounded-[20px] p-4 flex flex-row items-center gap-4 group relative overflow-hidden text-left w-full shadow-none hover:border-blue-500/40 dark:hover:border-blue-500/40 global-transition hover:shadow-md hover:-translate-y-0.5 min-h-[72px] dark:hover:shadow-[0_0_20px_rgba(59,130,246,0.05)]">
-                                                                                <div class={`w-11 h-11 rounded-[12px] flex items-center justify-center shadow-inner border border-black/5 dark:border-white/5 shrink-0 transition-transform group-hover:scale-105 ${iData.colorClass}`}><i class={`ph ${iData.icon} text-xl`}></i></div>
+                                                                                <div class={`w-11 h-11 rounded-[12px] flex items-center justify-center text-xl shadow-inner border border-black/5 dark:border-white/5 shrink-0 transition-transform group-hover:scale-105 ${iData.colorClass}`}><i class={`ph ${iData.icon} text-xl`}></i></div>
                                                                                 <div class="flex flex-col min-w-0 flex-1 justify-center"><h3 class="font-display text-sm font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 transition-colors whitespace-normal break-words leading-tight">{subj}</h3><p class="text-[11px] font-sans font-medium text-gray-400 dark:text-gray-500 tracking-wide mt-0.5 truncate">{groupedResourcesBySubject[subj].length} Files Indexed</p></div>
                                                                             </button>
                                                                         );
@@ -1216,7 +1193,6 @@
                                 </div>
                             </main>
 
-                            {}
                             {/* MOBILE NAVIGATION BAR COMPACT */}
                             <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 dark:bg-[#0c0d12]/90 backdrop-blur-md border-t border-gray-100 dark:border-white/5 z-50 px-4 flex items-center gap-6 overflow-x-auto no-scrollbar shadow-lg">
                                 {[
